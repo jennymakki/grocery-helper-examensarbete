@@ -1,4 +1,4 @@
-import connectToDatabase from "../../../lib/mongodb";
+import connectToDatabase from src/app/lib/mongodb.js;
 
 export async function GET() {
   try {
