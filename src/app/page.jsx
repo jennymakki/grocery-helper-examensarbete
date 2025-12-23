@@ -15,12 +15,12 @@ export default function Home() {
       </p>
 
       <button
-        onClick={() => signIn("google")}
+        onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
         className="premium-cta"
       >
         Continue with Google
       </button>
-      
+
     </section>
   );
 }

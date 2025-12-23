@@ -144,6 +144,136 @@ body {
   white-space: nowrap;
 }
 
+/* Dashboard container */
+.dashboard-container {
+  max-width: 900px;
+  margin: auto;
+  padding: 0;
+}
+
+/* Title */
+.dashboard-title {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 2rem;
+  color: #1f2933;
+}
+
+/* Action buttons */
+.dashboard-actions {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.primary-btn {
+  background-color: #5e8b7e;
+  color: white;
+  padding: 0.8rem 1.8rem;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.primary-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.secondary-btn {
+  background-color: transparent;
+  border: 1px solid #5e8b7e;
+  color: #5e8b7e;
+  padding: 0.8rem 1.8rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.secondary-btn:hover {
+  background-color: #e6f0ec;
+}
+
+/* Section titles */
+.dashboard-section {
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-size: 1.3rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid #e5e7eb; /* subtle line to “fill” space above cards */
+  color: #1f2933;
+}
+
+/* Recipe grid */
+.recipe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Recipe card */
+.recipe-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  text-align: center;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+}
+
+.recipe-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+.recipe-card img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+}
+
+.recipe-card h3 {
+  margin: 0.8rem 0;
+  font-size: 1rem;
+  color: #1f2933;
+}
+
+/* Grocery list grid */
+.list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.2rem;
+}
+
+/* Grocery list card */
+.list-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  text-align: center;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+}
+
+.list-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+.list-card h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #1f2933;
+}
+
 /* Responsive adjustments */
 @media (max-width: 640px) {
   .footer-inner {
