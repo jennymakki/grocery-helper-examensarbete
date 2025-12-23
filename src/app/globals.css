@@ -1,25 +1,167 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --font-sans: Arial, Helvetica, sans-serif;
-  --font-mono: "Courier New", monospace;
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* Global reset + typography */
 body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans);
-  margin: 0;
-  padding: 0;
+  background-color: #fafaf8;
+  color: #1f2933;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont;
+  -webkit-font-smoothing: antialiased;
 }
 
-* {
-  background-color: #E4E4E4;
+.app-main {
+  min-height: 70vh;
+  padding: 2rem;
+}
+
+/* Premium hero layout */
+.hero-premium {
+  max-width: 680px;
+  margin: auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+/* Headline */
+.hero-premium-title {
+  font-size: 3rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
+}
+
+/* Subtitle */
+.hero-premium-subtitle {
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: #6b7280;
+  margin-bottom: 3rem;
+}
+
+/* CTA Button */
+.premium-cta {
+  background-color: #5e8b7e;
+  color: white;
+  padding: 0.9rem 2.2rem;
+  font-size: 1.05rem;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.premium-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+/* Header container */
+.header-premium {
+  position: sticky;
+  top: 0;
+  background-color: rgba(250, 250, 248, 0.9);
+  backdrop-filter: blur(10px);
+  z-index: 10;
+  transition: box-shadow 0.25s ease;
+}
+
+.header-premium.scrolled {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* Inner layout */
+.header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.4rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Brand text */
+.header-brand {
+  font-size: 1.35rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #1f2933;
+}
+
+/* Accent on Helper */
+.header-brand span {
+  color: #5e8b7e;
+  font-weight: 600;
+}
+
+.header-brand:hover {
+  opacity: 0.85;
+}
+
+/* Login button */
+.header-login {
+  background: transparent;
+  border: 1px solid #d1d5db;
+  padding: 0.55rem 1.3rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  color: #1f2933;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.header-login:hover {
+  background-color: #e6f0ec;
+  border-color: #5e8b7e;
+}
+
+/* Footer container */
+.footer-premium {
+  margin-top: 6rem;
+  padding: 3rem 0 2rem;
+  background-color: transparent;
+}
+
+/* Inner layout */
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+
+/* Brand (subtle) */
+.footer-brand {
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.footer-brand span {
+  color: #5e8b7e;
+}
+
+/* Copyright text */
+.footer-copy {
+  white-space: nowrap;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .footer-inner {
+    flex-direction: column;
+    gap: 0.75rem;
+    text-align: center;
+  }
+
+  .header-login {
+    margin-top: 0.5rem;
+  }
+
+  .footer-copy {
+    white-space: normal;
+  }
+
+  .footer-premium {
+    padding-top: 2rem;
+  }
+
 }
