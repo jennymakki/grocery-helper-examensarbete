@@ -1,25 +1,34 @@
 import mongoose from "mongoose";
+import { MongoClient } from "mongodb";
 
 const MONGODB_URI = process.env.MONGODB_URI;
+if (!MONGODB_URI) throw new Error("Define the MONGODB_URI env var");
 
-if (!MONGODB_URI) {
-  throw new Error("Define the MONGODB_URI in .env.local");
+// Mongoose for app routes
+let cachedMongoose = global.mongoose;
+
+if (!cachedMongoose) {
+  cachedMongoose = global.mongoose = { conn: null, promise: null };
 }
 
-let cached = global.mongoose;
+export async function connectToDatabase() {
+  if (cachedMongoose.conn) return cachedMongoose.conn;
 
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
-}
-
-async function connectToDatabase() {
-  if (cached.conn) return cached.conn;
-
-  if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGODB_URI).then((mongoose) => mongoose);
+  if (!cachedMongoose.promise) {
+    cachedMongoose.promise = mongoose.connect(MONGODB_URI).then((mongoose) => mongoose);
   }
-  cached.conn = await cached.promise;
-  return cached.conn;
+  cachedMongoose.conn = await cachedMongoose.promise;
+  return cachedMongoose.conn;
 }
 
-export default connectToDatabase;
+// MongoClient for NextAuth
+let cachedClient;
+let cachedClientPromise;
+
+if (!global._mongoClientPromise) {
+  cachedClient = new MongoClient(MONGODB_URI);
+  global._mongoClientPromise = cachedClient.connect();
+}
+cachedClientPromise = global._mongoClientPromise;
+
+export const clientPromise = cachedClientPromise;

@@ -1,4 +1,4 @@
-import connectToDatabase from "../../lib/mongodb";
+import { connectToDatabase } from "../../lib/mongodb";
 
 export async function GET() {
   try {
@@ -13,4 +13,4 @@ export async function GET() {
       { status: 500 }
     );
   }
-} 
+}
