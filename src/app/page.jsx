@@ -1,3 +1,7 @@
+"use client";
+
+import { signIn } from "next-auth/react";
+
 export default function Home() {
   return (
     <div
@@ -10,23 +14,25 @@ export default function Home() {
         textAlign: "center",
       }}
     >
-      <h1 style={{ fontWeight: 400, }}>Welcome!</h1>
-      <p style={{ }}>Save your favorite recipes and turn them into smart grocery lists in a tap.</p>
+      <h1 style={{ fontWeight: 400 }}>Welcome!</h1>
+      <p>Save your favorite recipes and turn them into smart grocery lists in a tap.</p>
 
       {/* Button container */}
       <div style={{ display: "flex", gap: "1rem" }}>
-        <a
-          href="/login"
+        <button
+          onClick={() => signIn("google")}
           style={{
             padding: "0.6rem 1.4rem",
             backgroundColor: "#D3B898",
-            textDecoration: "none",
+            border: "none",
             borderRadius: "6px",
+            cursor: "pointer",
           }}
         >
-          Log In
-        </a>
+          Log In with Google
+        </button>
 
+        {/* Might remove this... */}
         <a
           href="/signup"
           style={{
