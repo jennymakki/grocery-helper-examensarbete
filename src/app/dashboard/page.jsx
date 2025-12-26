@@ -2,6 +2,8 @@
 
 import { useSession, signIn } from "next-auth/react";
 import { useEffect, useState } from "react";
+import AddRecipeForm from "../components/AddRecipeForm";
+import RecipeCard from "../components/RecipeCard";
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -60,6 +62,12 @@ export default function Dashboard() {
         <button className="secondary-btn">Create Grocery List</button>
       </div>
 
+      <AddRecipeForm onCreated={() => {
+  fetch("/api/recipes")
+    .then((res) => res.json())
+    .then(setRecipes);
+}} />
+
       {/* Recipes Section */}
       <section className="dashboard-section">
         <h2 className="section-title">Your Recipes</h2>
@@ -70,16 +78,19 @@ export default function Dashboard() {
           <p>You haven’t added any recipes yet.</p>
         )}
 
-        <div className="recipe-grid">
-          {recipes.map((recipe) => (
-            <div key={recipe._id} className="recipe-card">
-              <h3>{recipe.title}</h3>
-              {recipe.ingredients?.length > 0 && (
-                <p>{recipe.ingredients.join(", ")}</p>
-              )}
-            </div>
-          ))}
-        </div>
+<div className="recipe-grid">
+  {recipes.map((recipe) => (
+    <RecipeCard
+      key={recipe._id}
+      recipe={recipe}
+      onChange={() => {
+        fetch("/api/recipes")
+          .then((res) => res.json())
+          .then(setRecipes);
+      }}
+    />
+  ))}
+</div>
       </section>
     </div>
   );
