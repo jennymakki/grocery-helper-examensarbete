@@ -87,6 +87,7 @@ Users can manually create grocery lists or add ingredients directly from recipes
   userId: String
 }
 ```
+---
 
 ### Environment Variables
 Create a .env.local file in the root directory:
@@ -95,6 +96,8 @@ NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=your_secret
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+---
 
 ### Getting Started
 Install dependencies:
@@ -105,6 +108,8 @@ npm run dev
 
 Open your browser at:
 http://localhost:3000
+
+---
 
 ### User Flow
 1. Sign in using Google
@@ -118,6 +123,8 @@ http://localhost:3000
 5. Add or remove individual grocery items
 
 6. Check items off while shopping
+
+---
 
 ## Live demo
 https://grocery-helper-examensarbete.vercel.app
