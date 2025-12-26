@@ -1,9 +1,25 @@
 "use client";
 
 import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 
 export default function Dashboard() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+
+  // Redirect if not logged in
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      signIn("google");
+    }
+  }, [status]);
+
+  if (status === "loading") {
+    return <p>Loading dashboard...</p>;
+  }
+
+  if (!session) {
+    return null; // prevents flash before redirect
+  }
 
   // Example saved recipes
   const recipes = [
@@ -20,9 +36,19 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard-container">
-      <h1 className="dashboard-title">
-        Welcome{session?.user?.name ? `, ${session.user.name}` : ""}!
-      </h1>
+<h1 className="dashboard-title">
+<img
+  src={session.user.image}
+  alt={session.user.name}
+  style={{
+    width: 64,
+    height: 64,
+    borderRadius: "50%",
+    marginBottom: "1rem",
+  }}
+/>
+  Welcome, {session.user.name}
+</h1>
 
       {/* Action buttons */}
       <div className="dashboard-actions">

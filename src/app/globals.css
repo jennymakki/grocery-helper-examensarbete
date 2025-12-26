@@ -16,7 +16,7 @@ body {
 .hero-premium {
   max-width: 680px;
   margin: auto;
-  padding: 2rem;
+  padding: 0rem 2rem 2rem 2rem;
   text-align: center;
 }
 
