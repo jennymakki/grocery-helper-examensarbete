@@ -30,6 +30,20 @@ export default function DashboardPage() {
       .then(setGroceryLists);
   };
 
+  const addIngredientsToList = async (recipe, listId, newListTitle) => {
+    await fetch("/api/grocery-lists/add-ingredients", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        recipeId: recipe._id,
+        listId,
+        newListTitle,
+      }),
+    });
+
+    fetchGroceryLists();
+  };
+
   // Add item to grocery list
   const addItemToList = (listId, itemName) => {
     fetch("/api/grocery-lists", {
@@ -106,9 +120,11 @@ export default function DashboardPage() {
             <RecipeCard
               key={recipe._id}
               recipe={recipe}
+              groceryLists={groceryLists}
+              onAddIngredients={addIngredientsToList}
               onChange={() => {
                 fetchRecipes();
-                fetchGroceryLists(); // refresh grocery lists if generated
+                fetchGroceryLists();
               }}
             />
           ))}
@@ -118,14 +134,16 @@ export default function DashboardPage() {
       {/* Grocery Lists Section */}
       <section className="dashboard-section">
         <h2 className="section-title">Your Grocery Lists</h2>
-        {groceryLists.length === 0 && <p>You haven’t created any grocery lists yet.</p>}
+        {groceryLists.length === 0 && (
+          <p>You haven’t created any grocery lists yet.</p>
+        )}
 
         <div className="list-grid">
           {groceryLists.map((list) => (
             <GroceryListCard
               key={list._id}
               list={list}
-              addItem={(itemName) => addItemToList(list._id, itemName)}
+              onChange={fetchGroceryLists}
             />
           ))}
         </div>
