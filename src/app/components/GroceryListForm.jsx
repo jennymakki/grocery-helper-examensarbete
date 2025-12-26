@@ -2,32 +2,24 @@
 
 import { useState } from "react";
 
-export default function AddRecipeForm({ onCreated }) {
+export default function CreateGroceryListForm({ onCreated }) {
   const [title, setTitle] = useState("");
-  const [ingredients, setIngredients] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
 
-    const res = await fetch("/api/recipes", {
+    const res = await fetch("/api/grocery-lists", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title,
-        ingredients: ingredients
-          .split(",")
-          .map((i) => i.trim())
-          .filter(Boolean),
-      }),
+      body: JSON.stringify({ title }),
     });
 
     setLoading(false);
 
     if (res.ok) {
       setTitle("");
-      setIngredients("");
       onCreated?.();
     }
   }
@@ -35,7 +27,7 @@ export default function AddRecipeForm({ onCreated }) {
   return (
     <form onSubmit={handleSubmit} className="recipe-form">
       <div className="form-group">
-        <label>Recipe Title</label>
+        <label>Grocery List Title</label>
         <input
           type="text"
           value={title}
@@ -43,21 +35,8 @@ export default function AddRecipeForm({ onCreated }) {
           required
         />
       </div>
-
-      <div className="form-group">
-        <label>Ingredients</label>
-        <input
-          type="text"
-          value={ingredients}
-          onChange={(e) => setIngredients(e.target.value)}
-        />
-        <small className="form-hint">
-          Separate ingredients with commas
-        </small>
-      </div>
-
       <button type="submit" className="primary-btn" disabled={loading}>
-        {loading ? "Saving…" : "Save Recipe"}
+        {loading ? "Creating…" : "Create List"}
       </button>
     </form>
   );

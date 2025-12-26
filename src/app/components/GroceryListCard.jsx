@@ -25,10 +25,7 @@ export default function GroceryListCard({ list, onChange }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         id: list._id,
-        items: [
-          ...list.items,
-          { name: newItem.trim(), checked: false },
-        ],
+        items: [...list.items, { name: newItem.trim(), checked: false }],
       }),
     });
 
@@ -76,52 +73,59 @@ export default function GroceryListCard({ list, onChange }) {
   return (
     <div className="list-card">
       {/* Title */}
-      {editingTitle ? (
-        <>
-          <input value={title} onChange={(e) => setTitle(e.target.value)} />
-          <button onClick={saveTitle}>Save</button>
-          <button onClick={() => setEditingTitle(false)}>Cancel</button>
-        </>
-      ) : (
-        <>
-          <h3>{list.title}</h3>
-          <button onClick={() => setEditingTitle(true)}>Edit title</button>
-        </>
-      )}
-
-      {/* Add item */}
-      <div style={{ display: "flex", gap: "0.5rem", margin: "0.5rem 0" }}>
-        <input
-          placeholder="Add item"
-          value={newItem}
-          onChange={(e) => setNewItem(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && addItem()}
-        />
-        <button onClick={addItem}>Add</button>
+      <div className="list-card-header">
+        {editingTitle ? (
+          <>
+            <input
+              className="list-card-input"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+            <button className="secondary-btn" onClick={saveTitle}>Save</button>
+            <button className="secondary-btn" onClick={() => setEditingTitle(false)}>Cancel</button>
+          </>
+        ) : (
+          <>
+            <h3>{list.title}</h3>
+            <button className="secondary-btn" onClick={() => setEditingTitle(true)}>Edit</button>
+          </>
+        )}
       </div>
 
+      {/* Add Item */}
+      <div className="list-card-add-item">
+  <input
+    className="list-card-input"
+    placeholder="Add item"
+    value={newItem}
+    onChange={(e) => setNewItem(e.target.value)}
+    onKeyDown={(e) => e.key === "Enter" && addItem()}
+  />
+  <button
+    type="button"
+    className="primary-btn"
+    onClick={addItem}
+  >
+    Add
+  </button>
+</div>
+
       {/* Items */}
-      <ul>
+      <ul className="list-card-items">
         {list.items.map((item, idx) => (
-          <li key={idx} style={{ display: "flex", gap: "0.5rem" }}>
+          <li key={idx} className="list-card-item">
             <input
               type="checkbox"
               checked={item.checked}
               onChange={() => toggleItem(idx)}
             />
-            <span
-              style={{
-                textDecoration: item.checked ? "line-through" : "none",
-              }}
-            >
-              {item.name}
-            </span>
-            <button onClick={() => removeItem(idx)}>✕</button>
+            <span className={item.checked ? "checked" : ""}>{item.name}</span>
+            <button className="secondary-btn remove-btn" onClick={() => removeItem(idx)}>✕</button>
           </li>
         ))}
       </ul>
 
-      <button onClick={removeList} style={{ color: "red", marginTop: "0.5rem" }}>
+      <button className="secondary-btn remove-btn full-width" onClick={removeList}>
         Delete list
       </button>
     </div>

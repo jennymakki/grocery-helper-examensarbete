@@ -5,12 +5,15 @@ import { useEffect, useState } from "react";
 import AddRecipeForm from "../components/AddRecipeForm";
 import RecipeCard from "../components/RecipeCard";
 import GroceryListCard from "../components/GroceryListCard";
+import CreateGroceryListForm from "../components/GroceryListForm";
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
   const [recipes, setRecipes] = useState([]);
   const [loadingRecipes, setLoadingRecipes] = useState(true);
   const [groceryLists, setGroceryLists] = useState([]);
+  const [showAddRecipe, setShowAddRecipe] = useState(false);
+  const [showCreateList, setShowCreateList] = useState(false);
 
   // Fetch recipes from API
   const fetchRecipes = () => {
@@ -97,15 +100,51 @@ export default function DashboardPage() {
         )}
         Welcome, {session.user.name}
       </h1>
+      <p className="dashboard-subtitle">
+        What would you like to cook or plan today?
+      </p>
 
       {/* Action buttons */}
       <div className="dashboard-actions">
-        <button className="primary-btn">Add New Recipe</button>
-        <button className="secondary-btn">Create Grocery List</button>
-      </div>
+        <button
+          className="primary-btn"
+          onClick={() => setShowAddRecipe((v) => !v)}
+        >
+          {showAddRecipe ? "Close" : "Add New Recipe"}
+        </button>
 
-      {/* Add Recipe Form */}
-      <AddRecipeForm onCreated={fetchRecipes} />
+        <button
+    className="secondary-btn"
+    onClick={() => {
+      setShowCreateList((v) => !v);
+      setShowAddRecipe(false); // hide recipe form if open
+    }}
+  >
+    {showCreateList ? "Close" : "Create Grocery List"}
+  </button>
+</div>
+
+{showCreateList && (
+  <div className="dashboard-panel">
+    <CreateGroceryListForm
+      onCreated={() => {
+        fetchGroceryLists();
+        setShowCreateList(false);
+      }}
+    />
+  </div>
+)}
+
+      {showAddRecipe && (
+        <div className="dashboard-panel">
+          <AddRecipeForm
+            onCreated={() => {
+              fetchRecipes();
+              setShowAddRecipe(false);
+            }}
+          />
+        </div>
+      )}
 
       {/* Recipes Section */}
       <section className="dashboard-section">
