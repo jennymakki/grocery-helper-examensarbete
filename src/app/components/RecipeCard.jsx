@@ -56,6 +56,7 @@ export default function RecipeCard({
 
   return (
     <div className="recipe-card">
+      {/* Edit Mode */}
       {editing ? (
         <div className="recipe-edit-form">
           <input
@@ -69,30 +70,55 @@ export default function RecipeCard({
             onChange={(e) => setIngredients(e.target.value)}
           />
           <div className="recipe-card-actions">
-            <button className="primary-btn" onClick={save}>Save</button>
-            <button className="secondary-btn" onClick={() => setEditing(false)}>Cancel</button>
+            <button className="primary-btn" onClick={save}>
+              Save
+            </button>
+            <button
+              className="secondary-btn"
+              onClick={() => setEditing(false)}
+            >
+              Cancel
+            </button>
           </div>
         </div>
       ) : (
         <>
+          {/* Title */}
           <h3>{recipe.title}</h3>
+
+          {/* Ingredients Pills */}
           {recipe.ingredients?.length > 0 && (
-            <p>{recipe.ingredients.join(", ")}</p>
+            <div className="ingredients-pills">
+              {recipe.ingredients.map((ing, idx) => (
+                <span key={idx} className="pill">
+                  {ing}
+                </span>
+              ))}
+            </div>
           )}
 
+          {/* Action Buttons */}
           <div className="recipe-card-actions">
-            <button className="secondary-btn" onClick={() => setEditing(true)}>Edit</button>
-            <button className="secondary-btn" onClick={remove}>Delete</button>
+            <button
+              className="secondary-btn"
+              onClick={() => setEditing(true)}
+            >
+              Edit
+            </button>
+            <button className="secondary-btn" onClick={remove}>
+              Delete
+            </button>
             <button
               className="secondary-btn"
               onClick={() => setShowAddToList((v) => !v)}
             >
-              Add ingredients to grocery list
+              Add to grocery list
             </button>
           </div>
 
+          {/* Floating Add-to-List Panel */}
           {showAddToList && (
-            <div className="add-to-list">
+            <div className="add-to-list-panel">
               <select
                 value={selectedList}
                 onChange={(e) => setSelectedList(e.target.value)}

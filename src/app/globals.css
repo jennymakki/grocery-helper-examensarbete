@@ -488,16 +488,24 @@ body {
   color: #1f2933;
 }
 
-.recipe-card p {
-  margin: 0;
-  font-size: 0.95rem;
-  color: #4b5563;
+.ingredients-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.pill {
+  background-color: #f0fdf4;
+  color: #065f46;
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
 }
 
 .recipe-card-actions {
   display: flex;
-  gap: 0.5rem;
   flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .recipe-input {
@@ -509,11 +517,16 @@ body {
   font-size: 0.95rem;
 }
 
-.add-to-list {
+.add-to-list-panel {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 12px;
+  background-color: #f9fafb;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
 }
 
 /* Responsive adjustments */
