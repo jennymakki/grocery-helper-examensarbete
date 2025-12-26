@@ -4,48 +4,67 @@ import { useSession, signIn } from "next-auth/react";
 import { useEffect, useState } from "react";
 import AddRecipeForm from "../components/AddRecipeForm";
 import RecipeCard from "../components/RecipeCard";
+import GroceryListCard from "../components/GroceryListCard";
 
-export default function Dashboard() {
+export default function DashboardPage() {
   const { data: session, status } = useSession();
   const [recipes, setRecipes] = useState([]);
   const [loadingRecipes, setLoadingRecipes] = useState(true);
   const [groceryLists, setGroceryLists] = useState([]);
 
-  // Redirect if not logged in
+  // Fetch recipes from API
+  const fetchRecipes = () => {
+    fetch("/api/recipes")
+      .then((res) => res.json())
+      .then((data) => {
+        setRecipes(data);
+        setLoadingRecipes(false);
+      })
+      .catch(() => setLoadingRecipes(false));
+  };
+
+  // Fetch grocery lists from API
+  const fetchGroceryLists = () => {
+    fetch("/api/grocery-lists")
+      .then((res) => res.json())
+      .then(setGroceryLists);
+  };
+
+  // Add item to grocery list
+  const addItemToList = (listId, itemName) => {
+    fetch("/api/grocery-lists", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: listId,
+        items: [{ name: itemName, checked: false }],
+      }),
+    })
+      .then((res) => res.json())
+      .then((updatedList) => {
+        setGroceryLists((prev) =>
+          prev.map((list) => (list._id === listId ? updatedList : list))
+        );
+      });
+  };
+
+  // Redirect to login if unauthenticated
   useEffect(() => {
     if (status === "unauthenticated") {
       signIn("google");
     }
   }, [status]);
 
+  // Fetch data when authenticated
   useEffect(() => {
     if (status === "authenticated") {
-      fetch("/api/grocery-lists")
-        .then((res) => res.json())
-        .then(setGroceryLists);
+      fetchRecipes();
+      fetchGroceryLists();
     }
   }, [status]);
 
-  // Fetch user recipes
-  useEffect(() => {
-    if (status === "authenticated") {
-      fetch("/api/recipes")
-        .then((res) => res.json())
-        .then((data) => {
-          setRecipes(data);
-          setLoadingRecipes(false);
-        })
-        .catch(() => setLoadingRecipes(false));
-    }
-  }, [status]);
-
-  if (status === "loading") {
-    return <p>Loading dashboard...</p>;
-  }
-
-  if (!session) {
-    return null;
-  }
+  if (status === "loading") return <p>Loading dashboard...</p>;
+  if (!session) return null; // prevents flash before redirect
 
   return (
     <div className="dashboard-container">
@@ -71,47 +90,45 @@ export default function Dashboard() {
         <button className="secondary-btn">Create Grocery List</button>
       </div>
 
-      <AddRecipeForm onCreated={() => {
-  fetch("/api/recipes")
-    .then((res) => res.json())
-    .then(setRecipes);
-}} />
+      {/* Add Recipe Form */}
+      <AddRecipeForm onCreated={fetchRecipes} />
 
       {/* Recipes Section */}
       <section className="dashboard-section">
         <h2 className="section-title">Your Recipes</h2>
-
         {loadingRecipes && <p>Loading recipes...</p>}
-
         {!loadingRecipes && recipes.length === 0 && (
           <p>You haven’t added any recipes yet.</p>
         )}
 
-<div className="recipe-grid">
-  {recipes.map((recipe) => (
-    <RecipeCard
-      key={recipe._id}
-      recipe={recipe}
-      onChange={() => {
-        fetch("/api/recipes")
-          .then((res) => res.json())
-          .then(setRecipes);
-      }}
-    />
-  ))}
-</div>
+        <div className="recipe-grid">
+          {recipes.map((recipe) => (
+            <RecipeCard
+              key={recipe._id}
+              recipe={recipe}
+              onChange={() => {
+                fetchRecipes();
+                fetchGroceryLists(); // refresh grocery lists if generated
+              }}
+            />
+          ))}
+        </div>
+      </section>
 
-<h2 className="section-title">Your Grocery Lists</h2>
+      {/* Grocery Lists Section */}
+      <section className="dashboard-section">
+        <h2 className="section-title">Your Grocery Lists</h2>
+        {groceryLists.length === 0 && <p>You haven’t created any grocery lists yet.</p>}
 
-{groceryLists.length === 0 && (
-  <p>You haven’t created any grocery lists yet.</p>
-)}
-
-<div className="list-grid">
-  {groceryLists.map((list) => (
-    <GroceryListCard key={list._id} list={list} />
-  ))}
-</div>
+        <div className="list-grid">
+          {groceryLists.map((list) => (
+            <GroceryListCard
+              key={list._id}
+              list={list}
+              addItem={(itemName) => addItemToList(list._id, itemName)}
+            />
+          ))}
+        </div>
       </section>
     </div>
   );

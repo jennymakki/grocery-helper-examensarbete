@@ -13,8 +13,8 @@ const GroceryListSchema = new mongoose.Schema(
     },
     items: [
       {
-        name: String,
-        checked: Boolean,
+        name: { type: String, required: true },
+        checked: { type: Boolean, default: false },
       },
     ],
   },

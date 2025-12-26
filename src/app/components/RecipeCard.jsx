@@ -36,6 +36,20 @@ export default function RecipeCard({ recipe, onChange }) {
     onChange();
   }
 
+  async function generateGroceryListFromRecipe() {
+    const res = await fetch("/api/grocery-lists", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: `${recipe.title} List`,
+          items: recipe.ingredients.map((i) => ({ name: i, checked: false })),
+        }),
+      });
+  
+    // refresh dashboard grocery lists
+    onChange();
+  }
+
   if (editing) {
     return (
       <div className="recipe-card">
@@ -53,13 +67,14 @@ export default function RecipeCard({ recipe, onChange }) {
   return (
     <div className="recipe-card">
       <h3>{recipe.title}</h3>
-      {recipe.ingredients?.length > 0 && (
-        <p>{recipe.ingredients.join(", ")}</p>
-      )}
+      {recipe.ingredients?.length > 0 && <p>{recipe.ingredients.join(", ")}</p>}
 
-      <div style={{ display: "flex", gap: "0.5rem" }}>
+      <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
         <button onClick={() => setEditing(true)}>Edit</button>
         <button onClick={remove}>Delete</button>
+        <button onClick={generateGroceryListFromRecipe}>
+  Generate Grocery List
+</button>
       </div>
     </div>
   );
