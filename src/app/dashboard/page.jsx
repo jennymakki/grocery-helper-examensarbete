@@ -9,11 +9,20 @@ export default function Dashboard() {
   const { data: session, status } = useSession();
   const [recipes, setRecipes] = useState([]);
   const [loadingRecipes, setLoadingRecipes] = useState(true);
+  const [groceryLists, setGroceryLists] = useState([]);
 
   // Redirect if not logged in
   useEffect(() => {
     if (status === "unauthenticated") {
       signIn("google");
+    }
+  }, [status]);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      fetch("/api/grocery-lists")
+        .then((res) => res.json())
+        .then(setGroceryLists);
     }
   }, [status]);
 
@@ -89,6 +98,18 @@ export default function Dashboard() {
           .then(setRecipes);
       }}
     />
+  ))}
+</div>
+
+<h2 className="section-title">Your Grocery Lists</h2>
+
+{groceryLists.length === 0 && (
+  <p>You haven’t created any grocery lists yet.</p>
+)}
+
+<div className="list-grid">
+  {groceryLists.map((list) => (
+    <GroceryListCard key={list._id} list={list} />
   ))}
 </div>
       </section>
