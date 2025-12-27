@@ -85,21 +85,16 @@ export default function DashboardPage() {
 
   return (
     <div className="dashboard-container">
-      <h1 className="dashboard-title">
+      <div className="dashboard-header">
         {session.user.image && (
           <img
             src={session.user.image}
             alt={session.user.name}
-            style={{
-              width: 64,
-              height: 64,
-              borderRadius: "50%",
-              marginBottom: "1rem",
-            }}
+            className="dashboard-avatar"
           />
         )}
-        Welcome, {session.user.name}
-      </h1>
+        <h1 className="dashboard-title">Welcome, {session.user.name}</h1>
+      </div>
       <p className="dashboard-subtitle">
         What would you like to cook or plan today?
       </p>
@@ -114,26 +109,26 @@ export default function DashboardPage() {
         </button>
 
         <button
-    className="secondary-btn"
-    onClick={() => {
-      setShowCreateList((v) => !v);
-      setShowAddRecipe(false); // hide recipe form if open
-    }}
-  >
-    {showCreateList ? "Close" : "Create Grocery List"}
-  </button>
-</div>
+          className="secondary-btn"
+          onClick={() => {
+            setShowCreateList((v) => !v);
+            setShowAddRecipe(false); // hide recipe form if open
+          }}
+        >
+          {showCreateList ? "Close" : "Create Grocery List"}
+        </button>
+      </div>
 
-{showCreateList && (
-  <div className="dashboard-panel">
-    <CreateGroceryListForm
-      onCreated={() => {
-        fetchGroceryLists();
-        setShowCreateList(false);
-      }}
-    />
-  </div>
-)}
+      {showCreateList && (
+        <div className="dashboard-panel">
+          <CreateGroceryListForm
+            onCreated={() => {
+              fetchGroceryLists();
+              setShowCreateList(false);
+            }}
+          />
+        </div>
+      )}
 
       {showAddRecipe && (
         <div className="dashboard-panel">
