@@ -1,5 +1,12 @@
 import mongoose from "mongoose";
 
+const ItemSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  quantity: { type: String, default: "1" },
+  unit: { type: String, default: "pcs" },
+  checked: { type: Boolean, default: false },
+});
+
 const GroceryListSchema = new mongoose.Schema(
   {
     userId: {
@@ -11,12 +18,7 @@ const GroceryListSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    items: [
-      {
-        name: { type: String, required: true },
-        checked: { type: Boolean, default: false },
-      },
-    ],
+    items: [ItemSchema],
   },
   { timestamps: true }
 );

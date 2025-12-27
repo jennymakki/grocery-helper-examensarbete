@@ -30,7 +30,22 @@ export default function DashboardPage() {
   const fetchGroceryLists = () => {
     fetch("/api/grocery-lists")
       .then((res) => res.json())
-      .then(setGroceryLists);
+      .then((data) => {
+        const normalized = data.map(list => ({
+          ...list,
+          items: list.items.map(item =>
+            typeof item === "string"
+              ? { name: item, quantity: "1", unit: "pcs", checked: false }
+              : {
+                  name: item.name || "",
+                  quantity: item.quantity || "1",
+                  unit: item.unit || "pcs",
+                  checked: item.checked || false,
+                }
+          ),
+        }));
+        setGroceryLists(normalized);
+      });
   };
 
   const addIngredientsToList = async (recipe, listId, newListTitle) => {

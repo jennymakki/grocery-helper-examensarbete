@@ -1,10 +1,16 @@
 import mongoose from "mongoose";
 
+const IngredientSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  quantity: { type: String, default: "1" },
+  unit: { type: String, default: "pcs" },
+});
+
 const RecipeSchema = new mongoose.Schema(
   {
     userId: {
       type: String,
-      required: true, // NextAuth user.id
+      required: true,
       index: true,
     },
     title: {
@@ -12,7 +18,7 @@ const RecipeSchema = new mongoose.Schema(
       required: true,
     },
     image: String,
-    ingredients: [String],
+    ingredients: [IngredientSchema],
   },
   { timestamps: true }
 );

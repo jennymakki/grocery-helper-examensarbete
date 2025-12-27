@@ -1,12 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function GroceryListCard({ list, onChange }) {
   const [editingTitle, setEditingTitle] = useState(false);
   const [title, setTitle] = useState(list.title);
-  const [newItem, setNewItem] = useState("");
 
+  // New item input states
+  const [newItem, setNewItem] = useState("");
+  const [newQuantity, setNewQuantity] = useState("");
+  const [newUnit, setNewUnit] = useState("pcs");
+
+  // Local items state for rendering & updates
+  const [items, setItems] = useState([]);
+
+  // Normalize items whenever list.items changes
+  useEffect(() => {
+    const normalized = (list.items || []).map((item) => ({
+      name: item.name || (typeof item === "string" ? item : ""),
+      quantity: item.quantity || "1",
+      unit: item.unit || "pcs",
+      checked: item.checked || false,
+    }));
+    setItems(normalized);
+  }, [list.items]);
+
+  // Save updated list title
   async function saveTitle() {
     await fetch("/api/grocery-lists", {
       method: "PUT",
@@ -17,24 +36,36 @@ export default function GroceryListCard({ list, onChange }) {
     onChange();
   }
 
+  // Add a new item
   async function addItem() {
     if (!newItem.trim()) return;
+
+    const updatedItems = [
+      ...items,
+      {
+        name: newItem.trim(),
+        quantity: newQuantity.trim() || "1",
+        unit: newUnit,
+        checked: false,
+      },
+    ];
 
     await fetch("/api/grocery-lists", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: list._id,
-        items: [...list.items, { name: newItem.trim(), checked: false }],
-      }),
+      body: JSON.stringify({ id: list._id, items: updatedItems }),
     });
 
+    setItems(updatedItems);
     setNewItem("");
+    setNewQuantity("");
+    setNewUnit("pcs");
     onChange();
   }
 
+  // Toggle checked state
   async function toggleItem(index) {
-    const updatedItems = [...list.items];
+    const updatedItems = [...items];
     updatedItems[index].checked = !updatedItems[index].checked;
 
     await fetch("/api/grocery-lists", {
@@ -43,11 +74,13 @@ export default function GroceryListCard({ list, onChange }) {
       body: JSON.stringify({ id: list._id, items: updatedItems }),
     });
 
+    setItems(updatedItems);
     onChange();
   }
 
+  // Remove item
   async function removeItem(index) {
-    const updatedItems = list.items.filter((_, i) => i !== index);
+    const updatedItems = items.filter((_, i) => i !== index);
 
     await fetch("/api/grocery-lists", {
       method: "PUT",
@@ -55,9 +88,11 @@ export default function GroceryListCard({ list, onChange }) {
       body: JSON.stringify({ id: list._id, items: updatedItems }),
     });
 
+    setItems(updatedItems);
     onChange();
   }
 
+  // Delete entire list
   async function removeList() {
     if (!confirm("Delete this grocery list?")) return;
 
@@ -86,7 +121,7 @@ export default function GroceryListCard({ list, onChange }) {
           </>
         ) : (
           <>
-            <h3>{list.title}</h3>
+            <h3>{title}</h3>
             <button className="secondary-btn" onClick={() => setEditingTitle(true)}>Edit</button>
           </>
         )}
@@ -94,35 +129,52 @@ export default function GroceryListCard({ list, onChange }) {
 
       {/* Add Item */}
       <div className="list-card-add-item">
-  <input
-    className="list-card-input"
-    placeholder="Add item"
-    value={newItem}
-    onChange={(e) => setNewItem(e.target.value)}
-    onKeyDown={(e) => e.key === "Enter" && addItem()}
-  />
-  <button
-    type="button"
-    className="primary-btn"
-    onClick={addItem}
-  >
-    Add
-  </button>
-</div>
+        <input
+          className="list-card-input"
+          placeholder="Ingredient"
+          value={newItem}
+          onChange={(e) => setNewItem(e.target.value)}
+        />
+        <input
+          type="number"
+          className="list-card-input quantity-input"
+          placeholder="Qty"
+          value={newQuantity}
+          onChange={(e) => setNewQuantity(e.target.value)}
+          min="0"
+        />
+        <select
+          className="list-card-select"
+          value={newUnit}
+          onChange={(e) => setNewUnit(e.target.value)}
+        >
+          <option value="pcs">pcs</option>
+          <option value="g">g</option>
+          <option value="kg">kg</option>
+          <option value="ml">ml</option>
+          <option value="l">l</option>
+        </select>
+        <button className="primary-btn" onClick={addItem}>Add</button>
+      </div>
 
       {/* Items */}
       <ul className="list-card-items">
-        {list.items.map((item, idx) => (
-          <li key={idx} className="list-card-item">
-            <input
-              type="checkbox"
-              checked={item.checked}
-              onChange={() => toggleItem(idx)}
-            />
-            <span className={item.checked ? "checked" : ""}>{item.name}</span>
-            <button className="secondary-btn remove-btn" onClick={() => removeItem(idx)}>✕</button>
-          </li>
-        ))}
+        {items.map((item, idx) => {
+          const { name, quantity, unit, checked } = item;
+          return (
+            <li key={idx} className="list-card-item">
+              <input
+                type="checkbox"
+                checked={checked}
+                onChange={() => toggleItem(idx)}
+              />
+              <span className={checked ? "checked" : ""}>
+                {name} {quantity} {unit}
+              </span>
+              <button className="secondary-btn remove-btn" onClick={() => removeItem(idx)}>✕</button>
+            </li>
+          );
+        })}
       </ul>
 
       <button className="secondary-btn remove-btn full-width" onClick={removeList}>

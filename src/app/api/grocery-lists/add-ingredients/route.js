@@ -29,8 +29,16 @@ export async function POST(req) {
   }
 
   recipe.ingredients.forEach((ingredient) => {
-    if (!list.items.some((i) => i.name === ingredient)) {
-      list.items.push({ name: ingredient, checked: false });
+    const normalized = {
+      name: ingredient.name || ingredient,
+      quantity: ingredient.quantity || "1",
+      unit: ingredient.unit || "pcs",
+      checked: false,
+    };
+  
+    // Avoid duplicates based on name
+    if (!list.items.some((i) => i.name === normalized.name)) {
+      list.items.push(normalized);
     }
   });
 

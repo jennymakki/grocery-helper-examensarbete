@@ -10,14 +10,19 @@ export default function RecipeCard({
 }) {
   const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState(recipe.title);
-  const [ingredients, setIngredients] = useState(
-    recipe.ingredients?.join(", ") || ""
+  const [ingredientsList, setIngredientsList] = useState(
+    recipe.ingredients?.map((ing) =>
+      typeof ing === "string"
+        ? { name: ing, quantity: "1", unit: "pcs" }
+        : ing
+    ) || []
   );
 
   const [showAddToList, setShowAddToList] = useState(false);
   const [selectedList, setSelectedList] = useState("");
   const [newListTitle, setNewListTitle] = useState("");
 
+  // Save recipe changes
   async function save() {
     await fetch("/api/recipes", {
       method: "PUT",
@@ -25,13 +30,14 @@ export default function RecipeCard({
       body: JSON.stringify({
         id: recipe._id,
         title,
-        ingredients: ingredients.split(",").map((i) => i.trim()),
+        ingredients: ingredientsList,
       }),
     });
     setEditing(false);
     onChange();
   }
 
+  // Delete recipe
   async function remove() {
     if (!confirm("Delete this recipe?")) return;
 
@@ -43,6 +49,7 @@ export default function RecipeCard({
     onChange();
   }
 
+  // Add ingredients to grocery list
   const handleAddIngredients = async () => {
     await onAddIngredients(
       recipe,
@@ -54,29 +61,126 @@ export default function RecipeCard({
     setNewListTitle("");
   };
 
+  // Add new ingredient in edit mode
+  const [newIngredientName, setNewIngredientName] = useState("");
+  const [newIngredientQty, setNewIngredientQty] = useState("");
+  const [newIngredientUnit, setNewIngredientUnit] = useState("pcs");
+
+  function addIngredient() {
+    if (!newIngredientName.trim()) return;
+
+    setIngredientsList([
+      ...ingredientsList,
+      {
+        name: newIngredientName.trim(),
+        quantity: newIngredientQty.trim() || "1",
+        unit: newIngredientUnit,
+      },
+    ]);
+
+    setNewIngredientName("");
+    setNewIngredientQty("");
+    setNewIngredientUnit("pcs");
+  }
+
+  // Remove ingredient in edit mode
+  function removeIngredient(idx) {
+    setIngredientsList(ingredientsList.filter((_, i) => i !== idx));
+  }
+
   return (
     <div className="recipe-card">
-      {/* Edit Mode */}
       {editing ? (
         <div className="recipe-edit-form">
+          {/* Recipe Title */}
           <input
             className="recipe-input"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
-          <input
-            className="recipe-input"
-            value={ingredients}
-            onChange={(e) => setIngredients(e.target.value)}
-          />
+
+          {/* Ingredients List */}
+          <div className="ingredient-edit-list">
+            {ingredientsList.map((ing, idx) => (
+              <div key={idx} className="ingredient-row">
+                <input
+                  value={ing.name}
+                  onChange={(e) => {
+                    const updated = [...ingredientsList];
+                    updated[idx].name = e.target.value;
+                    setIngredientsList(updated);
+                  }}
+                  className="recipe-input"
+                />
+                <input
+                  type="number"
+                  value={ing.quantity}
+                  onChange={(e) => {
+                    const updated = [...ingredientsList];
+                    updated[idx].quantity = e.target.value;
+                    setIngredientsList(updated);
+                  }}
+                  className="recipe-input quantity-input"
+                  min="0"
+                />
+                <select
+                  value={ing.unit}
+                  onChange={(e) => {
+                    const updated = [...ingredientsList];
+                    updated[idx].unit = e.target.value;
+                    setIngredientsList(updated);
+                  }}
+                  className="recipe-input"
+                >
+                  <option value="pcs">pcs</option>
+                  <option value="g">g</option>
+                  <option value="kg">kg</option>
+                  <option value="ml">ml</option>
+                  <option value="l">l</option>
+                </select>
+                <button type="button" onClick={() => removeIngredient(idx)}>
+                  ✕
+                </button>
+              </div>
+            ))}
+
+            {/* Add New Ingredient */}
+            <div className="ingredient-row">
+              <input
+                type="text"
+                placeholder="Ingredient"
+                value={newIngredientName}
+                onChange={(e) => setNewIngredientName(e.target.value)}
+              />
+              <input
+                type="number"
+                placeholder="Qty"
+                value={newIngredientQty}
+                onChange={(e) => setNewIngredientQty(e.target.value)}
+                min="0"
+              />
+              <select
+                value={newIngredientUnit}
+                onChange={(e) => setNewIngredientUnit(e.target.value)}
+              >
+                <option value="pcs">pcs</option>
+                <option value="g">g</option>
+                <option value="kg">kg</option>
+                <option value="ml">ml</option>
+                <option value="l">l</option>
+              </select>
+              <button type="button" onClick={addIngredient}>
+                Add
+              </button>
+            </div>
+          </div>
+
+          {/* Actions */}
           <div className="recipe-card-actions">
             <button className="primary-btn" onClick={save}>
               Save
             </button>
-            <button
-              className="secondary-btn"
-              onClick={() => setEditing(false)}
-            >
+            <button className="secondary-btn" onClick={() => setEditing(false)}>
               Cancel
             </button>
           </div>
@@ -91,7 +195,7 @@ export default function RecipeCard({
             <div className="ingredients-pills">
               {recipe.ingredients.map((ing, idx) => (
                 <span key={idx} className="pill">
-                  {ing}
+                  {ing.name} {ing.quantity} {ing.unit}
                 </span>
               ))}
             </div>
@@ -99,10 +203,7 @@ export default function RecipeCard({
 
           {/* Action Buttons */}
           <div className="recipe-card-actions">
-            <button
-              className="secondary-btn"
-              onClick={() => setEditing(true)}
-            >
+            <button className="secondary-btn" onClick={() => setEditing(true)}>
               Edit
             </button>
             <button className="secondary-btn" onClick={remove}>
@@ -145,7 +246,9 @@ export default function RecipeCard({
               <button
                 className="primary-btn"
                 onClick={handleAddIngredients}
-                disabled={!selectedList || (selectedList === "new" && !newListTitle)}
+                disabled={
+                  !selectedList || (selectedList === "new" && !newListTitle)
+                }
               >
                 Add ingredients
               </button>
