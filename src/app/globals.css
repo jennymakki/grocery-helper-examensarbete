@@ -38,7 +38,7 @@ body {
 
 /* CTA Button */
 .premium-cta {
-  background-color: #5e8b7e;
+  background-color: #397b6b;
   color: white;
   padding: 0.9rem 2.2rem;
   font-size: 1.05rem;
@@ -80,7 +80,7 @@ body {
 
 /* Brand text */
 .header-brand {
-  font-size: 1.35rem;
+  font-size: 1.55rem;
   font-weight: 500;
   letter-spacing: -0.01em;
   color: #1f2933;
@@ -88,7 +88,7 @@ body {
 
 /* Accent on Helper */
 .header-brand span {
-  color: #5e8b7e;
+  color: #397b6b;
   font-weight: 600;
 }
 
@@ -136,7 +136,7 @@ body {
 }
 
 .footer-brand span {
-  color: #5e8b7e;
+  color: #397b6b;
 }
 
 /* Copyright text */
@@ -191,7 +191,7 @@ body {
 }
 
 .primary-btn {
-  background-color: #5e8b7e;
+  background-color: #397b6b;
   color: white;
   padding: 0.8rem 1.8rem;
   border: none;
@@ -209,7 +209,7 @@ body {
 .secondary-btn {
   background-color: transparent;
   border: 1px solid #5e8b7e;
-  color: #065f46;
+  color: #397b6b;
   padding: 0.8rem 1.8rem;
   border-radius: 999px;
   cursor: pointer;
