@@ -577,8 +577,6 @@ body {
 
 @media (max-width: 640px) {
   .recipe-card-remove-btn {
-    width: 28px;
-    height: 28px;
     font-size: 0.9rem;
   }
 
