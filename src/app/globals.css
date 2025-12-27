@@ -433,7 +433,9 @@ body {
 
 .list-card-add-item {
   display: flex;
+  align-items: center;
   gap: 0.5rem;
+  width: 100%;
 }
 
 
@@ -475,6 +477,36 @@ body {
   width: 100%;
   margin-top: 0.5rem;
 }
+ 
+  .list-card-add-item {
+    flex-wrap: wrap;
+  }
+
+  /* Ingredient takes full row */
+  .list-card-add-item .list-card-input:not(.quantity-input) {
+    flex: 1 1 100%;
+  }
+
+  /* Bottom row */
+  .list-card-add-item .quantity-input {
+    flex: 1 1 30%;
+  }
+
+  .list-card-select {
+    flex: 1 1 30%;
+    padding: 0.6rem 0.9rem;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    background-color: #fafaf8;
+    font-size: 0.95rem;
+    line-height: 1.2;
+    height: 40px;
+    box-sizing: border-box;
+  }
+
+  .list-card-add-item .primary-btn {
+    flex: 1 1 40%;
+  }
 
 .recipe-card h3 {
   margin: 0;

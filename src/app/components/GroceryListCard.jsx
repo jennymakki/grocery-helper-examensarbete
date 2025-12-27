@@ -138,7 +138,7 @@ export default function GroceryListCard({ list, onChange }) {
         <input
           type="number"
           className="list-card-input quantity-input"
-          placeholder="Qty"
+          placeholder="Quantity"
           value={newQuantity}
           onChange={(e) => setNewQuantity(e.target.value)}
           min="0"
