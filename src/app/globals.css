@@ -290,50 +290,75 @@ body {
   animation: fadeSlideIn 0.25s ease-out;
 }
 
-/* Form layout */
-.recipe-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-/* Groups */
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.form-group label {
-  font-size: 0.85rem;
-  color: #4b5563;
-}
-
-/* Inputs */
-.recipe-form input {
-  padding: 0.7rem 0.9rem;
+.recipe-form input,
+.recipe-form select {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
   font-size: 0.95rem;
+  line-height: 1.2;
   border-radius: 10px;
   border: 1px solid #e5e7eb;
   background-color: #fafaf8;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.recipe-form input:focus {
-  outline: none;
-  border-color: #5e8b7e;
-  box-shadow: 0 0 0 3px rgba(94, 139, 126, 0.15);
+.form-group {
+  margin-bottom: 1rem;
 }
 
-/* Subtle entrance */
-@keyframes fadeSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
+.form-label {
+  font-size: 1.2rem;
+}
+
+/* Focus effect */
+.recipe-form input:focus,
+.recipe-form select:focus {
+  outline: none;
+  border-color: #5e8b7e;
+  box-shadow: 0 0 0 2px rgba(94, 139, 126, 0.15);
+}
+
+/* Ingredient row flex layout */
+.ingredient-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+/* Ingredient text takes more space */
+.ingredient-row input[type="text"] {
+  flex: 2 1 auto;
+}
+
+/* Quantity input smaller */
+.ingredient-row input.quantity-input {
+  flex: 1 1 auto;
+}
+
+/* Unit select smaller */
+.ingredient-row select.unit-select {
+  flex: 1 1 auto;
+}
+
+/* Mobile adjustments */
+@media (max-width: 640px) {
+  .ingredient-row {
+    flex-direction: column;
+    gap: 0.4rem;
+    align-items: stretch;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .ingredient-row input,
+  .ingredient-row select,
+  .ingredient-row button {
+    flex: 1 1 100%;
+    padding: 0.45rem 0.6rem;  /* smaller, compact */
+    font-size: 0.9rem;
+    line-height: 1.2;
+    min-height: auto;
+    margin: 0.7rem 0 0.7rem 0;
   }
 }
 

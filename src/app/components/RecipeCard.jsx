@@ -146,33 +146,47 @@ export default function RecipeCard({
 
             {/* Add New Ingredient */}
             <div className="ingredient-row">
-              <input
-                type="text"
-                placeholder="Ingredient"
-                value={newIngredientName}
-                onChange={(e) => setNewIngredientName(e.target.value)}
-              />
-              <input
-                type="number"
-                placeholder="Qty"
-                value={newIngredientQty}
-                onChange={(e) => setNewIngredientQty(e.target.value)}
-                min="0"
-              />
-              <select
-                value={newIngredientUnit}
-                onChange={(e) => setNewIngredientUnit(e.target.value)}
-              >
-                <option value="pcs">pcs</option>
-                <option value="g">g</option>
-                <option value="kg">kg</option>
-                <option value="ml">ml</option>
-                <option value="l">l</option>
-              </select>
-              <button type="button" onClick={addIngredient}>
-                Add
-              </button>
-            </div>
+  <input
+    type="text"
+    placeholder="Ingredient"
+    value={ing.name}
+    onChange={(e) => {
+      const updated = [...ingredientsList];
+      updated[idx].name = e.target.value;
+      setIngredientsList(updated);
+    }}
+    className="ingredient-name-input"
+  />
+  <input
+    type="number"
+    value={ing.quantity}
+    onChange={(e) => {
+      const updated = [...ingredientsList];
+      updated[idx].quantity = e.target.value;
+      setIngredientsList(updated);
+    }}
+    className="ingredient-quantity-input"
+    min="0"
+  />
+  <select
+    value={ing.unit}
+    onChange={(e) => {
+      const updated = [...ingredientsList];
+      updated[idx].unit = e.target.value;
+      setIngredientsList(updated);
+    }}
+    className="ingredient-unit-select"
+  >
+    <option value="pcs">pcs</option>
+    <option value="g">g</option>
+    <option value="kg">kg</option>
+    <option value="ml">ml</option>
+    <option value="l">l</option>
+  </select>
+  <button type="button" onClick={() => removeIngredient(idx)} className="ingredient-remove-btn">
+    ✕
+  </button>
+</div>
           </div>
 
           {/* Actions */}

@@ -10,7 +10,6 @@ export default function AddRecipeForm({ onCreated }) {
   const [newUnit, setNewUnit] = useState("pcs");
   const [loading, setLoading] = useState(false);
 
-  // Add a new ingredient to the list
   function addIngredient() {
     if (!newIngredient.trim()) return;
 
@@ -28,12 +27,10 @@ export default function AddRecipeForm({ onCreated }) {
     setNewUnit("pcs");
   }
 
-  // Remove an ingredient from the list
   function removeIngredient(index) {
     setIngredientsList(ingredientsList.filter((_, i) => i !== index));
   }
 
-  // Submit recipe
   async function handleSubmit(e) {
     e.preventDefault();
     if (!title.trim()) return;
@@ -42,10 +39,7 @@ export default function AddRecipeForm({ onCreated }) {
     const res = await fetch("/api/recipes", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title,
-        ingredients: ingredientsList,
-      }),
+      body: JSON.stringify({ title, ingredients: ingredientsList }),
     });
 
     setLoading(false);
@@ -64,7 +58,7 @@ export default function AddRecipeForm({ onCreated }) {
     <form onSubmit={handleSubmit} className="recipe-form">
       {/* Recipe title */}
       <div className="form-group">
-        <label>Recipe Title</label>
+        <label className ="form-label">Recipe Title</label>
         <input
           type="text"
           value={title}
@@ -75,13 +69,14 @@ export default function AddRecipeForm({ onCreated }) {
 
       {/* Add ingredient */}
       <div className="form-group">
-        <label>Ingredients</label>
+        <label className="form-label">Ingredients</label>
         <div className="ingredient-row">
           <input
             type="text"
             placeholder="Ingredient"
             value={newIngredient}
             onChange={(e) => setNewIngredient(e.target.value)}
+            className="recipe-input"
           />
           <input
             type="number"
@@ -89,15 +84,20 @@ export default function AddRecipeForm({ onCreated }) {
             value={newQuantity}
             onChange={(e) => setNewQuantity(e.target.value)}
             min="0"
+            className="quantity-input"
           />
-          <select value={newUnit} onChange={(e) => setNewUnit(e.target.value)}>
+          <select
+            value={newUnit}
+            onChange={(e) => setNewUnit(e.target.value)}
+            className="unit-select"
+          >
             <option value="pcs">pcs</option>
             <option value="g">g</option>
             <option value="kg">kg</option>
             <option value="ml">ml</option>
             <option value="l">l</option>
           </select>
-          <button type="button" onClick={addIngredient}>
+          <button type="button" className="secondary-btn add-btn" onClick={addIngredient}>
             Add
           </button>
         </div>
@@ -105,9 +105,11 @@ export default function AddRecipeForm({ onCreated }) {
         {/* Display added ingredients */}
         <ul className="ingredient-list">
           {ingredientsList.map((ing, idx) => (
-            <li key={idx}>
-              {ing.name} {ing.quantity} {ing.unit}{" "}
-              <button type="button" onClick={() => removeIngredient(idx)}>
+            <li key={idx} className="ingredient-item">
+              <span>
+                {ing.name} {ing.quantity !== "1" || ing.unit !== "pcs" ? `${ing.quantity} ${ing.unit}` : ""}
+              </span>
+              <button type="button" className="remove-btn" onClick={() => removeIngredient(idx)}>
                 ✕
               </button>
             </li>
@@ -115,7 +117,6 @@ export default function AddRecipeForm({ onCreated }) {
         </ul>
       </div>
 
-      {/* Submit button */}
       <button type="submit" className="primary-btn" disabled={loading}>
         {loading ? "Saving…" : "Save Recipe"}
       </button>
