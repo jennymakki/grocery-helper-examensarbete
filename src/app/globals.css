@@ -536,6 +536,58 @@ body {
   justify-content: center;
 }
 
+.recipe-card-remove-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: none;
+  background-color: #fee2e2;
+  color: #991b1b;
+  font-size: 1rem;
+  padding: 1rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.recipe-card-remove-btn:hover {
+  background-color: #fecaca;
+  transform: scale(1.05);
+}
+
+.recipe-card-add-btn {
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  border: none;
+  background-color: #397b6b;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.recipe-card-add-btn:hover {
+  background-color: #2f6658;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 640px) {
+  .recipe-card-remove-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
+  }
+
+  .recipe-card-add-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
 .recipe-input {
   width: 100%;
   padding: 0.6rem 0.9rem;
