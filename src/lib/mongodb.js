@@ -4,31 +4,32 @@ import { MongoClient } from "mongodb";
 const MONGODB_URI = process.env.MONGODB_URI;
 if (!MONGODB_URI) throw new Error("Define the MONGODB_URI env var");
 
-// Mongoose for app routes
+// ---------- MONGOOSE (App data) ----------
 let cachedMongoose = global.mongoose;
 
 if (!cachedMongoose) {
   cachedMongoose = global.mongoose = { conn: null, promise: null };
 }
 
-export async function connectToDatabase() {
+export async function dbConnect() {
   if (cachedMongoose.conn) return cachedMongoose.conn;
 
   if (!cachedMongoose.promise) {
     cachedMongoose.promise = mongoose.connect(MONGODB_URI).then((mongoose) => mongoose);
   }
+
   cachedMongoose.conn = await cachedMongoose.promise;
   return cachedMongoose.conn;
 }
 
-// MongoClient for NextAuth
-let cachedClient;
+// ---------- MONGODB CLIENT (NextAuth) ----------
 let cachedClientPromise;
 
 if (!global._mongoClientPromise) {
-  cachedClient = new MongoClient(MONGODB_URI);
-  global._mongoClientPromise = cachedClient.connect();
+  const client = new MongoClient(MONGODB_URI);
+  global._mongoClientPromise = client.connect();
 }
+
 cachedClientPromise = global._mongoClientPromise;
 
 export const clientPromise = cachedClientPromise;

@@ -9,6 +9,7 @@ export default function AddRecipeForm({ onCreated }) {
   const [newQuantity, setNewQuantity] = useState("");
   const [newUnit, setNewUnit] = useState("pcs");
   const [loading, setLoading] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
 
   function addIngredient() {
     if (!newIngredient.trim()) return;
@@ -36,10 +37,14 @@ export default function AddRecipeForm({ onCreated }) {
     if (!title.trim()) return;
     setLoading(true);
 
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("ingredients", JSON.stringify(ingredientsList));
+    if (imageFile) formData.append("image", imageFile);
+
     const res = await fetch("/api/recipes", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, ingredients: ingredientsList }),
+      body: formData,
     });
 
     setLoading(false);
@@ -47,6 +52,7 @@ export default function AddRecipeForm({ onCreated }) {
     if (res.ok) {
       setTitle("");
       setIngredientsList([]);
+      setImageFile(null);
       setNewIngredient("");
       setNewQuantity("");
       setNewUnit("pcs");
@@ -66,6 +72,14 @@ export default function AddRecipeForm({ onCreated }) {
           required
         />
       </div>
+
+
+      <label>Recipe Image (optional)</label>
+      <input
+        type="file"
+        accept="image/*"
+        onChange={(e) => setImageFile(e.target.files[0])}
+      />
 
       {/* Add ingredient */}
       <div className="form-group">

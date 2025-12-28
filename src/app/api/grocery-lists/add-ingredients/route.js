@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
-import { connectToDatabase } from "@/app/lib/mongodb";
+import { dbConnect } from "@/lib/mongodb";
 import GroceryList from "@/app/models/GroceryList";
 import Recipe from "@/app/models/Recipe";
 
@@ -9,7 +9,7 @@ export async function POST(req) {
   if (!session) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
   const { recipeId, listId, newListTitle } = await req.json();
-  await connectToDatabase();
+  await dbConnect();
 
   const recipe = await Recipe.findById(recipeId);
   if (!recipe) {

@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
-import { connectToDatabase } from "../../lib/mongodb";
+import { dbConnect } from "@/lib/mongodb";
 import GroceryList from "../../models/GroceryList";
 
 // GET – fetch user's grocery lists
@@ -8,7 +8,7 @@ export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session) return new Response("Unauthorized", { status: 401 });
 
-  await connectToDatabase();
+  await dbConnect();
 
   const lists = await GroceryList.find({
     userId: session.user.id,
@@ -29,7 +29,7 @@ export async function POST(req) {
       return new Response(JSON.stringify({ error: "Title is required" }), { status: 400 });
     }
   
-    await connectToDatabase();
+    await dbConnect();
   
     const newList = await GroceryList.create({
       userId: session.user.id,
@@ -47,7 +47,7 @@ export async function PUT(req) {
 
   const { id, items } = await req.json();
 
-  await connectToDatabase();
+  await dbConnect();
 
   const list = await GroceryList.findOneAndUpdate(
     { _id: id, userId: session.user.id },
@@ -67,7 +67,7 @@ export async function DELETE(req) {
 
   const { id } = await req.json();
 
-  await connectToDatabase();
+  await dbConnect();
 
   await GroceryList.deleteOne({
     _id: id,

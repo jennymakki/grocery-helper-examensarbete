@@ -199,6 +199,16 @@ export default function RecipeCard({
         </div>
       ) : (
         <>
+          {/* Recipe Image */}
+          <div className="recipe-image-wrapper">
+            <img
+              src={recipe.image || "/recipe-placeholder.png"}
+              alt={recipe.title}
+              className="recipe-image"
+              loading="lazy"
+            />
+          </div>
+
           {/* Title */}
           <h3>{recipe.title}</h3>
 

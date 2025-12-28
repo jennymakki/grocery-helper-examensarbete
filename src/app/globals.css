@@ -575,6 +575,28 @@ body {
   transform: translateY(-1px);
 }
 
+/* Recipe Card Image */
+.recipe-image-wrapper {
+  width: 100%;
+  height: 180px;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #f3f3f3;
+  margin-bottom: 0.75rem;
+}
+
+.recipe-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.recipe-card:hover .recipe-image {
+  transform: scale(1.03);
+  transition: transform 0.3s ease;
+}
+
 @media (max-width: 640px) {
   .recipe-card-remove-btn {
     font-size: 0.9rem;
