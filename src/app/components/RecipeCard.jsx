@@ -20,19 +20,35 @@ export default function RecipeCard({
   const [selectedList, setSelectedList] = useState("");
   const [newListTitle, setNewListTitle] = useState("");
 
-  // Save recipe changes
+  // Image state
+  const [newImageFile, setNewImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(recipe.image || "/recipe-placeholder.png");
+
+  // New ingredient state
+  const [newIngredientName, setNewIngredientName] = useState("");
+  const [newIngredientQty, setNewIngredientQty] = useState("");
+  const [newIngredientUnit, setNewIngredientUnit] = useState("pcs");
+
+  // Save recipe changes (including image)
   async function save() {
-    await fetch("/api/recipes", {
+    const formData = new FormData();
+    formData.append("id", recipe._id);
+    formData.append("title", title);
+    formData.append("ingredients", JSON.stringify(ingredientsList));
+    if (newImageFile) formData.append("image", newImageFile);
+
+    const res = await fetch("/api/recipes", {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: recipe._id,
-        title,
-        ingredients: ingredientsList,
-      }),
+      body: formData,
     });
-    setEditing(false);
-    onChange();
+
+    if (res.ok) {
+      setEditing(false);
+      setNewImageFile(null);
+      onChange();
+    } else {
+      console.error("Failed to update recipe");
+    }
   }
 
   // Delete recipe
@@ -59,11 +75,7 @@ export default function RecipeCard({
     setNewListTitle("");
   };
 
-  // Add new ingredient in edit mode
-  const [newIngredientName, setNewIngredientName] = useState("");
-  const [newIngredientQty, setNewIngredientQty] = useState("");
-  const [newIngredientUnit, setNewIngredientUnit] = useState("pcs");
-
+  // Add new ingredient
   function addIngredient() {
     if (!newIngredientName.trim()) return;
 
@@ -81,7 +93,7 @@ export default function RecipeCard({
     setNewIngredientUnit("pcs");
   }
 
-  // Remove ingredient in edit mode
+  // Remove ingredient
   function removeIngredient(idx) {
     setIngredientsList(ingredientsList.filter((_, i) => i !== idx));
   }
@@ -90,6 +102,39 @@ export default function RecipeCard({
     <div className="recipe-card">
       {editing ? (
         <div className="recipe-edit-form">
+          {/* Recipe Image */}
+          <div className="recipe-image-wrapper" style={{ position: "relative" }}>
+            <img
+              src={imagePreview}
+              alt={title}
+              className="recipe-image"
+              loading="lazy"
+            />
+            <label
+              htmlFor={`image-upload-${recipe._id}`}
+              className="image-edit-btn"
+              title="Upload new image"
+            >
+              Edit
+              <input
+                type="file"
+                id={`image-upload-${recipe._id}`}
+                accept="image/*"
+                style={{ display: "none" }}
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (!file) return;
+                  setNewImageFile(file);
+
+                  // Preview immediately
+                  const reader = new FileReader();
+                  reader.onload = (event) => setImagePreview(event.target.result);
+                  reader.readAsDataURL(file);
+                }}
+              />
+            </label>
+          </div>
+
           {/* Recipe Title */}
           <input
             className="recipe-input"
@@ -155,7 +200,6 @@ export default function RecipeCard({
                 onChange={(e) => setNewIngredientName(e.target.value)}
                 className="recipe-input"
               />
-
               <input
                 type="number"
                 placeholder="Quantity"
@@ -164,7 +208,6 @@ export default function RecipeCard({
                 className="recipe-input quantity-input"
                 min="0"
               />
-
               <select
                 value={newIngredientUnit}
                 onChange={(e) => setNewIngredientUnit(e.target.value)}
@@ -176,7 +219,6 @@ export default function RecipeCard({
                 <option value="ml">ml</option>
                 <option value="l">l</option>
               </select>
-
               <button
                 type="button"
                 className="recipe-card-add-btn"
