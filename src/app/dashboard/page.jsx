@@ -6,6 +6,7 @@ import AddRecipeForm from "../components/AddRecipeForm";
 import RecipeCard from "../components/RecipeCard";
 import GroceryListCard from "../components/GroceryListCard";
 import CreateGroceryListForm from "../components/GroceryListForm";
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
@@ -14,6 +15,9 @@ export default function DashboardPage() {
   const [groceryLists, setGroceryLists] = useState([]);
   const [showAddRecipe, setShowAddRecipe] = useState(false);
   const [showCreateList, setShowCreateList] = useState(false);
+
+  const displayedRecipes = recipes.slice(0, 6);
+  const router = useRouter();
 
   // Fetch recipes from API
   const fetchRecipes = () => {
@@ -31,9 +35,9 @@ export default function DashboardPage() {
     fetch("/api/grocery-lists")
       .then((res) => res.json())
       .then((data) => {
-        const normalized = data.map(list => ({
+        const normalized = data.map((list) => ({
           ...list,
-          items: list.items.map(item =>
+          items: list.items.map((item) =>
             typeof item === "string"
               ? { name: item, quantity: "1", unit: "pcs", checked: false }
               : {
@@ -165,7 +169,7 @@ export default function DashboardPage() {
         )}
 
         <div className="recipe-grid">
-          {recipes.map((recipe) => (
+          {displayedRecipes.map((recipe) => (
             <RecipeCard
               key={recipe._id}
               recipe={recipe}
@@ -178,6 +182,17 @@ export default function DashboardPage() {
             />
           ))}
         </div>
+
+        {recipes.length > 6 && (
+          <div className="dashboard-view-all">
+            <button
+              className="primary-btn"
+              onClick={() => router.push("/recipes")}
+            >
+              View all recipes
+            </button>
+          </div>
+        )}
       </section>
 
       {/* Grocery Lists Section */}

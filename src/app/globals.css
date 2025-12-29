@@ -241,6 +241,21 @@ body {
   gap: 1.5rem;
 }
 
+@media (max-width: 768px) {
+  .recipe-grid {
+    display: flex;
+    overflow-x: auto;
+    gap: 1rem;
+    padding-bottom: 0.5rem;
+    scroll-snap-type: x mandatory;
+  }
+
+  .recipe-grid > * {
+    min-width: 260px;
+    scroll-snap-align: start;
+  }
+}
+
 /* Recipe card */
 .recipe-card {
   background-color: #ffffff;
@@ -275,6 +290,12 @@ body {
   color: #4b5563;
   margin-bottom: 2.5rem;
   text-align: center;
+}
+
+.dashboard-view-all {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
 }
 
 .recipe-link {
