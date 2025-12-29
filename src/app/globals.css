@@ -232,13 +232,20 @@ body {
   padding-bottom: 0.3rem;
   border-bottom: 1px solid #e5e7eb; /* subtle line to “fill” space above cards */
   color: #1f2933;
+  text-align: center;
 }
 
 /* Recipe grid */
 .recipe-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .recipe-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 768px) {
@@ -697,5 +704,45 @@ body {
   .footer-premium {
     padding-top: 2rem;
   }
+}
 
+.filter-bar {
+  margin-bottom: 1rem;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  border: 1px solid #ccc;
+}
+
+.recipes-page-container {
+  padding: 1rem;
+}
+
+.recipe-page-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Desktop: 3 per row */
+  gap: 1rem;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .recipe-page-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 per row */
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .recipe-page-grid {
+    grid-template-columns: 1fr; /* 1 per row */
+  }
+}
+
+.page-end {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
 }
