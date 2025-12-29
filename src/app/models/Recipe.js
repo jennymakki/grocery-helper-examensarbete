@@ -18,6 +18,7 @@ const RecipeSchema = new mongoose.Schema(
       required: true,
     },
     image: String,
+    link: String,
     ingredients: [IngredientSchema],
   },
   { timestamps: true }

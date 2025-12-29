@@ -31,6 +31,7 @@ export async function POST(req) {
 
   const formData = await req.formData(); // Web standard FormData
   const title = formData.get("title");
+  const link = formData.get("link");
   const ingredients = JSON.parse(formData.get("ingredients") || "[]");
   const imageFile = formData.get("image");
 
@@ -42,6 +43,7 @@ export async function POST(req) {
   const recipe = await Recipe.create({
     userId: session.user.id,
     title,
+    link,
     ingredients,
     image: imageUrl,
   });
@@ -61,13 +63,14 @@ export async function PUT(req) {
   const title = formData.get("title");
   const ingredients = JSON.parse(formData.get("ingredients") || "[]");
   const imageFile = formData.get("image");
+  const link = formData.get("link");
 
   let imageUrl;
   if (imageFile && imageFile.size > 0) {
     imageUrl = await uploadToCloudinary(imageFile);
   }
 
-  const updatedData = { title, ingredients };
+  const updatedData = { title, link, ingredients };
   if (imageUrl) updatedData.image = imageUrl;
 
   const recipe = await Recipe.findOneAndUpdate(

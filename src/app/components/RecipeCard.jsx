@@ -19,10 +19,13 @@ export default function RecipeCard({
   const [showAddToList, setShowAddToList] = useState(false);
   const [selectedList, setSelectedList] = useState("");
   const [newListTitle, setNewListTitle] = useState("");
+  const [link, setLink] = useState(recipe.link || "");
 
   // Image state
   const [newImageFile, setNewImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(recipe.image || "/recipe-placeholder.png");
+  const [imagePreview, setImagePreview] = useState(
+    recipe.image || "/recipe-placeholder.png"
+  );
 
   // New ingredient state
   const [newIngredientName, setNewIngredientName] = useState("");
@@ -34,6 +37,7 @@ export default function RecipeCard({
     const formData = new FormData();
     formData.append("id", recipe._id);
     formData.append("title", title);
+    formData.append("link", link);
     formData.append("ingredients", JSON.stringify(ingredientsList));
     if (newImageFile) formData.append("image", newImageFile);
 
@@ -103,7 +107,10 @@ export default function RecipeCard({
       {editing ? (
         <div className="recipe-edit-form">
           {/* Recipe Image */}
-          <div className="recipe-image-wrapper" style={{ position: "relative" }}>
+          <div
+            className="recipe-image-wrapper"
+            style={{ position: "relative" }}
+          >
             <img
               src={imagePreview}
               alt={title}
@@ -128,7 +135,8 @@ export default function RecipeCard({
 
                   // Preview immediately
                   const reader = new FileReader();
-                  reader.onload = (event) => setImagePreview(event.target.result);
+                  reader.onload = (event) =>
+                    setImagePreview(event.target.result);
                   reader.readAsDataURL(file);
                 }}
               />
@@ -140,6 +148,14 @@ export default function RecipeCard({
             className="recipe-input"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+          />
+
+          <input
+            className="recipe-input"
+            type="url"
+            placeholder="Recipe link"
+            value={link}
+            onChange={(e) => setLink(e.target.value)}
           />
 
           {/* Ingredients List */}
@@ -253,6 +269,17 @@ export default function RecipeCard({
 
           {/* Title */}
           <h3>{recipe.title}</h3>
+
+          {recipe.link && (
+            <a
+              href={recipe.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="recipe-link"
+            >
+              View recipe ↗
+            </a>
+          )}
 
           {/* Ingredients Pills */}
           {recipe.ingredients?.length > 0 && (

@@ -10,6 +10,7 @@ export default function AddRecipeForm({ onCreated }) {
   const [newUnit, setNewUnit] = useState("pcs");
   const [loading, setLoading] = useState(false);
   const [imageFile, setImageFile] = useState(null);
+  const [link, setLink] = useState("");
 
   function addIngredient() {
     if (!newIngredient.trim()) return;
@@ -39,6 +40,7 @@ export default function AddRecipeForm({ onCreated }) {
 
     const formData = new FormData();
     formData.append("title", title);
+    formData.append("link", link.trim());
     formData.append("ingredients", JSON.stringify(ingredientsList));
     if (imageFile) formData.append("image", imageFile);
 
@@ -57,6 +59,7 @@ export default function AddRecipeForm({ onCreated }) {
       setNewQuantity("");
       setNewUnit("pcs");
       onCreated?.();
+      setLink("");
     }
   }
 
@@ -73,6 +76,15 @@ export default function AddRecipeForm({ onCreated }) {
         />
       </div>
 
+      <div className="form-group">
+  <label className="form-label">Recipe Link (optional)</label>
+  <input
+    type="url"
+    placeholder="https://example.com/recipe"
+    value={link}
+    onChange={(e) => setLink(e.target.value)}
+  />
+</div>
 
       <label>Recipe Image (optional)</label>
       <input

@@ -258,14 +258,11 @@ body {
   box-shadow: 0 8px 24px rgba(0,0,0,0.08);
 }
 
-/* Grocery list grid */
 .list-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1.2rem;
 }
-
-/* Grocery list card */
 
 .list-card h3 {
   margin: 0;
@@ -278,6 +275,16 @@ body {
   color: #4b5563;
   margin-bottom: 2.5rem;
   text-align: center;
+}
+
+.recipe-link {
+  text-align: center;
+  text-decoration: none;
+}
+
+.recipe-link:hover {
+  text-decoration: underline;
+
 }
 
 /* Panel wrapper (dashboard reveal) */
