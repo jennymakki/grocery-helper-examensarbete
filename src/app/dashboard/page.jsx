@@ -9,7 +9,6 @@ import GroceryListCard from "../components/GroceryListCard";
 import CreateGroceryListForm from "../components/GroceryListForm";
 import LoadingSkeleton from "../components/LoadingSkeleton";
 
-
 export default function DashboardPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -97,64 +96,20 @@ export default function DashboardPage() {
     }
   }, [status]);
 
-  if (status === "loading") {
-    return (
-      <div className="dashboard-container">
-        {/* Header skeleton */}
-        <div className="dashboard-header">
-          <LoadingSkeleton width="3rem" height="3rem" style={{ borderRadius: "50%" }} />
-          <LoadingSkeleton width="200px" height="2rem" style={{ marginLeft: "1rem" }} />
-        </div>
-        <LoadingSkeleton width="50%" height="1.2rem" style={{ marginTop: "0.5rem" }} />
-  
-        {/* Action buttons skeleton */}
-        <div className="dashboard-actions" style={{ marginTop: "1rem", display: "flex", gap: "0.5rem" }}>
-          <LoadingSkeleton width="120px" height="2.5rem" />
-          <LoadingSkeleton width="140px" height="2.5rem" />
-        </div>
-  
-        {/* Recipes Section Skeleton */}
-        <section className="dashboard-section" style={{ marginTop: "2rem" }}>
-          <LoadingSkeleton width="150px" height="1.5rem" style={{ marginBottom: "1rem" }} />
-  
-          <div className="recipe-grid">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="recipe-card">
-                <LoadingSkeleton width="100%" height="8rem" />
-                <LoadingSkeleton width="80%" height="1.2rem" style={{ marginTop: "0.5rem" }} />
-                <LoadingSkeleton width="60%" height="1rem" style={{ marginTop: "0.25rem" }} />
-              </div>
-            ))}
-          </div>
-        </section>
-  
-        {/* Grocery Lists Section Skeleton */}
-        <section className="dashboard-section" style={{ marginTop: "2rem" }}>
-          <LoadingSkeleton width="180px" height="1.5rem" style={{ marginBottom: "1rem" }} />
-  
-          <div className="list-grid">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="list-card">
-                <LoadingSkeleton width="70%" height="1.5rem" />
-                {Array.from({ length: 4 }).map((_, j) => (
-                  <LoadingSkeleton key={j} width="90%" height="1rem" style={{ marginTop: "0.25rem" }} />
-                ))}
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
-    );
-  }
   if (!session) return null;
 
   return (
     <div className="dashboard-container">
+      {/* Header */}
       <div className="dashboard-header">
-        {session.user.image && (
+        {session.user.image ? (
           <img src={session.user.image} alt={session.user.name} className="dashboard-avatar" />
+        ) : (
+          <LoadingSkeleton width="3rem" height="3rem" style={{ borderRadius: "50%" }} />
         )}
-        <h1 className="dashboard-title">Welcome, {session.user.name}</h1>
+        <h1 className="dashboard-title">
+          {session.user.name || <LoadingSkeleton width="200px" height="2rem" />}
+        </h1>
       </div>
       <p className="dashboard-subtitle">
         What would you like to cook or plan today?
@@ -209,23 +164,35 @@ export default function DashboardPage() {
       {/* Recipes Section */}
       <section className="dashboard-section">
         <h2 className="section-title">Your Recipes</h2>
-        {loadingRecipes && <p>Loading recipes...</p>}
-        {!loadingRecipes && recipes.length === 0 && <p>You haven’t added any recipes yet.</p>}
 
-        <div className="recipe-grid">
-          {displayedRecipes.map((recipe) => (
-            <RecipeCard
-              key={recipe._id}
-              recipe={recipe}
-              groceryLists={groceryLists}
-              onAddIngredients={addIngredientsToList}
-              onChange={() => {
-                fetchRecipes();
-                fetchGroceryLists();
-              }}
-            />
-          ))}
-        </div>
+        {loadingRecipes ? (
+          <div className="recipe-grid">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="recipe-card">
+                <LoadingSkeleton width="100%" height="8rem" />
+                <LoadingSkeleton width="80%" height="1.2rem" style={{ marginTop: "0.5rem" }} />
+                <LoadingSkeleton width="60%" height="1rem" style={{ marginTop: "0.25rem" }} />
+              </div>
+            ))}
+          </div>
+        ) : recipes.length === 0 ? (
+          <p>You haven’t added any recipes yet.</p>
+        ) : (
+          <div className="recipe-grid">
+            {displayedRecipes.map((recipe) => (
+              <RecipeCard
+                key={recipe._id}
+                recipe={recipe}
+                groceryLists={groceryLists}
+                onAddIngredients={addIngredientsToList}
+                onChange={() => {
+                  fetchRecipes();
+                  fetchGroceryLists();
+                }}
+              />
+            ))}
+          </div>
+        )}
 
         {recipes.length > 6 && (
           <div className="dashboard-view-all">
@@ -239,13 +206,32 @@ export default function DashboardPage() {
       {/* Grocery Lists Section */}
       <section className="dashboard-section">
         <h2 className="section-title">Your Grocery Lists</h2>
-        {groceryLists.length === 0 && <p>You haven’t created any grocery lists yet.</p>}
 
-        <div className="list-grid">
-          {groceryLists.map((list) => (
-            <GroceryListCard key={list._id} list={list} onChange={fetchGroceryLists} />
-          ))}
-        </div>
+        {fetchingLists ? (
+          <div className="list-grid">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="list-card">
+                <LoadingSkeleton width="70%" height="1.5rem" />
+                {Array.from({ length: 4 }).map((_, j) => (
+                  <LoadingSkeleton
+                    key={j}
+                    width="90%"
+                    height="1rem"
+                    style={{ marginTop: "0.25rem" }}
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
+        ) : groceryLists.length === 0 ? (
+          <p>You haven’t created any grocery lists yet.</p>
+        ) : (
+          <div className="list-grid">
+            {groceryLists.map((list) => (
+              <GroceryListCard key={list._id} list={list} onChange={fetchGroceryLists} />
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );
