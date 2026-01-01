@@ -6,20 +6,22 @@ import Recipe from "@/app/models/Recipe";
 
 export async function POST(req) {
   const session = await getServerSession(authOptions);
-  if (!session) return Response.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session)
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
 
   const { recipeId, listId, newListTitle } = await req.json();
   await dbConnect();
 
   const recipe = await Recipe.findById(recipeId);
-  if (!recipe) {
+  if (!recipe)
     return Response.json({ error: "Recipe not found" }, { status: 404 });
-  }
 
   let list;
 
   if (listId) {
     list = await GroceryList.findOne({ _id: listId, userId: session.user.id });
+    if (!list)
+      return Response.json({ error: "Grocery list not found" }, { status: 404 });
   } else {
     list = await GroceryList.create({
       userId: session.user.id,
@@ -28,19 +30,31 @@ export async function POST(req) {
     });
   }
 
-  recipe.ingredients.forEach((ingredient) => {
-    const normalized = {
-      name: ingredient.name || ingredient,
-      quantity: ingredient.quantity || "1",
-      unit: ingredient.unit || "pcs",
-      checked: false,
-    };
-  
-    // Avoid duplicates based on name
-    if (!list.items.some((i) => i.name === normalized.name)) {
-      list.items.push(normalized);
+  for (const ingredient of recipe.ingredients) {
+    const name = ingredient.name || ingredient;
+    const quantity = parseFloat(ingredient.quantity || "1");
+    const unit = ingredient.unit || "pcs";
+
+    // Find if the same item+unit already exists
+    const existing = list.items.find(
+      (i) => i.name.toLowerCase() === name.toLowerCase() && i.unit === unit
+    );
+
+    if (existing) {
+      // Merge quantities
+      existing.quantity = (
+        parseFloat(existing.quantity) + quantity
+      ).toString();
+    } else {
+      // Add new item
+      list.items.push({
+        name,
+        quantity: quantity.toString(),
+        unit,
+        checked: false,
+      });
     }
-  });
+  }
 
   await list.save();
 

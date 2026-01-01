@@ -32,19 +32,38 @@ export default function GroceryListCard({ list, onChange }) {
     onChange();
   }
 
-  // Add a new item
-  async function addItem(item) {
-    const updatedItems = [...items, item];
-  
-    await fetch("/api/grocery-lists", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: list._id, items: updatedItems }),
-    });
-  
-    setItems(updatedItems);
-    onChange();
+// Add a new item, merging duplicates
+async function addItem(newItem) {
+  const updatedItems = [...items];
+
+  // Check if item with same name & unit exists
+  const existingIndex = updatedItems.findIndex(
+    (i) => i.name.toLowerCase() === newItem.name.toLowerCase() && i.unit === newItem.unit
+  );
+
+  if (existingIndex > -1) {
+    // Merge quantities
+    const existing = updatedItems[existingIndex];
+    const existingQty = parseFloat(existing.quantity) || 0;
+    const newQty = parseFloat(newItem.quantity) || 0;
+    updatedItems[existingIndex] = {
+      ...existing,
+      quantity: (existingQty + newQty).toString(),
+    };
+  } else {
+    updatedItems.push(newItem);
   }
+
+  // Save to API
+  await fetch("/api/grocery-lists", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id: list._id, items: updatedItems }),
+  });
+
+  setItems(updatedItems);
+  onChange();
+}
 
   // Toggle checked state
   async function toggleItem(index) {
