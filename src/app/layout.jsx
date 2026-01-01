@@ -10,6 +10,11 @@ export const metadata = {
   },
   description:
     "Plan meals, save recipes, and create grocery lists.",
+    icons: {
+      icon: "/favicon-32.png",
+      shortcut: "/favicon-32.png",
+      apple: "/favicon-32.png",
+    },
 };
 
 export default function RootLayout({ children }) {
