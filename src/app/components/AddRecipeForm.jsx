@@ -29,8 +29,8 @@ export default function AddRecipeForm({ onCreated }) {
     setNewUnit("pcs");
   }
 
-  function removeIngredient(index) {
-    setIngredientsList(ingredientsList.filter((_, i) => i !== index));
+  function removeIngredient(idx) {
+    setIngredientsList(ingredientsList.filter((_, i) => i !== idx));
   }
 
   async function handleSubmit(e) {
@@ -44,10 +44,7 @@ export default function AddRecipeForm({ onCreated }) {
     formData.append("ingredients", JSON.stringify(ingredientsList));
     if (imageFile) formData.append("image", imageFile);
 
-    const res = await fetch("/api/recipes", {
-      method: "POST",
-      body: formData,
-    });
+    const res = await fetch("/api/recipes", { method: "POST", body: formData });
 
     setLoading(false);
 
@@ -58,91 +55,89 @@ export default function AddRecipeForm({ onCreated }) {
       setNewIngredient("");
       setNewQuantity("");
       setNewUnit("pcs");
-      onCreated?.();
       setLink("");
+      onCreated?.();
     }
   }
 
   return (
     <form onSubmit={handleSubmit} className="recipe-form">
-      {/* Recipe title */}
-      <div className="form-group">
-        <label className ="form-label">Recipe Title</label>
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
-      </div>
 
-      <div className="form-group">
-  <label className="form-label">Recipe Link (optional)</label>
-  <input
-    type="url"
-    placeholder="https://example.com/recipe"
-    value={link}
-    onChange={(e) => setLink(e.target.value)}
-  />
-</div>
+      {/* Title */}
+      <input
+        type="text"
+        placeholder="Recipe Title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        className="recipe-input full-width"
+        required
+      />
 
-      <label>Recipe Image (optional)</label>
+      {/* Link */}
+      <input
+        type="url"
+        placeholder="Recipe Link (optional)"
+        value={link}
+        onChange={(e) => setLink(e.target.value)}
+        className="recipe-input full-width"
+      />
+
+      {/* Image */}
       <input
         type="file"
         accept="image/*"
         onChange={(e) => setImageFile(e.target.files[0])}
+        className="recipe-input full-width"
       />
 
-      {/* Add ingredient */}
-      <div className="form-group">
-        <label className="form-label">Ingredients</label>
-        <div className="ingredient-row">
-          <input
-            type="text"
-            placeholder="Ingredient"
-            value={newIngredient}
-            onChange={(e) => setNewIngredient(e.target.value)}
-            className="recipe-input"
-          />
-          <input
-            type="number"
-            placeholder="Quantity"
-            value={newQuantity}
-            onChange={(e) => setNewQuantity(e.target.value)}
-            min="0"
-            className="quantity-input"
-          />
-          <select
-            value={newUnit}
-            onChange={(e) => setNewUnit(e.target.value)}
-            className="unit-select"
-          >
-            <option value="pcs">pcs</option>
-            <option value="g">g</option>
-            <option value="kg">kg</option>
-            <option value="ml">ml</option>
-            <option value="l">l</option>
-          </select>
-          <button type="button" className="add-ingredient" onClick={addIngredient}>
-            Add Ingredient
-          </button>
-        </div>
-
-        {/* Display added ingredients */}
-        <ul className="ingredient-list">
-          {ingredientsList.map((ing, idx) => (
-            <li key={idx} className="ingredient-item">
-              <span>
-                {ing.name} {ing.quantity !== "1" || ing.unit !== "pcs" ? `${ing.quantity} ${ing.unit}` : ""}
-              </span>
-              <button type="button" className="remove-btn" onClick={() => removeIngredient(idx)}>
-                ✕
-              </button>
-            </li>
-          ))}
-        </ul>
+      {/* Ingredient Row */}
+      <div className="list-card-add-item">
+        <input
+          type="text"
+          placeholder="Ingredient"
+          value={newIngredient}
+          onChange={(e) => setNewIngredient(e.target.value)}
+          className="list-card-input"
+        />
+        <input
+          type="number"
+          placeholder="Quantity"
+          value={newQuantity}
+          onChange={(e) => setNewQuantity(e.target.value)}
+          className="list-card-input quantity-input"
+          min="0"
+        />
+        <select
+          value={newUnit}
+          onChange={(e) => setNewUnit(e.target.value)}
+          className="list-card-select"
+        >
+          <option value="pcs">pcs</option>
+          <option value="g">g</option>
+          <option value="kg">kg</option>
+          <option value="ml">ml</option>
+          <option value="l">l</option>
+        </select>
+        <button type="button" className="secondary-btn add-btn" onClick={addIngredient}>
+          Add
+        </button>
       </div>
 
+      {/* List of Added Ingredients */}
+      <ul className="ingredient-list">
+        {ingredientsList.map((ing, idx) => (
+          <li key={idx} className="ingredient-item">
+            <span>
+              {ing.name} {ing.quantity !== "1" || ing.unit !== "pcs" ? `${ing.quantity} ${ing.unit}` : ""}
+            </span>
+            <button type="button" className="remove-btn" onClick={() => removeIngredient(idx)}>
+              ✕
+            </button>
+          </li>
+        ))}
+      </ul>
+
+      {/* Submit */}
       <button type="submit" className="primary-btn" disabled={loading}>
         {loading ? "Saving…" : "Save Recipe"}
       </button>

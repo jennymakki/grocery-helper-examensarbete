@@ -809,3 +809,8 @@ body {
     left: 100%;
   }
 }
+
+.recipe-form input.full-width {
+  display: block;
+  margin-bottom: 0.8rem;
+}
