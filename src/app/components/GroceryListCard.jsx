@@ -116,16 +116,56 @@ export default function GroceryListCard({ list, onChange }) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
-            <button className="secondary-btn" onClick={saveTitle}>Save</button>
-            <button className="secondary-btn" onClick={() => setEditingTitle(false)}>Cancel</button>
+            <button className="secondary-btn" onClick={saveTitle}>
+              Save
+            </button>
+            <button
+              className="secondary-btn"
+              onClick={() => setEditingTitle(false)}
+            >
+              Cancel
+            </button>
           </>
         ) : (
           <>
             <h3>{title}</h3>
-            <button className="secondary-btn" onClick={() => setEditingTitle(true)}>Edit</button>
+            <button
+              className="secondary-btn"
+              onClick={() => setEditingTitle(true)}
+            >
+              Edit
+            </button>
           </>
         )}
       </div>
+
+      {/* Items */}
+      <ul className="list-card-items">
+        {items.map((item, idx) => {
+          const { name, quantity, unit, checked } = item;
+          return (
+            <li key={idx} className="list-card-item">
+              <input
+                type="checkbox"
+                checked={checked}
+                onChange={() => toggleItem(idx)}
+              />
+              <span className={checked ? "checked" : ""}>
+                {name}
+                <span className="item-meta">
+                  {quantity} {unit}
+                </span>
+              </span>
+              <button
+                className="secondary-btn remove-btn"
+                onClick={() => removeItem(idx)}
+              >
+                ✕
+              </button>
+            </li>
+          );
+        })}
+      </ul>
 
       {/* Add Item */}
       <div className="list-card-add-item">
@@ -154,30 +194,15 @@ export default function GroceryListCard({ list, onChange }) {
           <option value="ml">ml</option>
           <option value="l">l</option>
         </select>
-        <button className="primary-btn" onClick={addItem}>Add</button>
+        <button className="primary-btn" onClick={addItem}>
+          Add
+        </button>
       </div>
 
-      {/* Items */}
-      <ul className="list-card-items">
-        {items.map((item, idx) => {
-          const { name, quantity, unit, checked } = item;
-          return (
-            <li key={idx} className="list-card-item">
-              <input
-                type="checkbox"
-                checked={checked}
-                onChange={() => toggleItem(idx)}
-              />
-              <span className={checked ? "checked" : ""}>
-                {name} {quantity} {unit}
-              </span>
-              <button className="secondary-btn remove-btn" onClick={() => removeItem(idx)}>✕</button>
-            </li>
-          );
-        })}
-      </ul>
-
-      <button className="secondary-btn remove-btn full-width" onClick={removeList}>
+      <button
+        className="secondary-btn remove-btn full-width"
+        onClick={removeList}
+      >
         Delete list
       </button>
     </div>

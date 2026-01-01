@@ -286,12 +286,6 @@ body {
   gap: 1.2rem;
 }
 
-.list-card h3 {
-  margin: 0;
-  font-size: 1rem;
-  color: #1f2933;
-}
-
 .dashboard-subtitle {
   font-size: 0.95rem;
   color: #4b5563;
@@ -328,8 +322,8 @@ body {
 .recipe-form input,
 .recipe-form select {
   width: 100%;
-  padding: 0.5rem 0.75rem;
   font-size: 0.95rem;
+  padding: 0.4rem 0 0.4rem 0;
   line-height: 1.2;
   border-radius: 10px;
   border: 1px solid #e5e7eb;
@@ -389,7 +383,6 @@ body {
   .ingredient-row select,
   .ingredient-row button {
     flex: 1 1 100%;
-    padding: 0.45rem 0.6rem;  /* smaller, compact */
     font-size: 0.9rem;
     line-height: 1.2;
     min-height: auto;
@@ -449,12 +442,13 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.list-card h3 {
-  margin: 0;
-  font-size: 1rem;
-  color: #1f2933;
+.list-card-header h3 {
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
 .list-card-input {
@@ -471,6 +465,8 @@ body {
   align-items: center;
   gap: 0.5rem;
   width: 100%;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e5e7eb;
 }
 
 
@@ -494,11 +490,35 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px dashed #e5e7eb;
+}
+
+.list-card-item:last-child {
+  border-bottom: none;
 }
 
 .list-card-item span.checked {
   text-decoration: line-through;
   color: #9ca3af;
+  opacity: 0.7;
+}
+
+.list-card-item span {
+  transition: color 0.15s ease, opacity 0.15s ease;
+}
+
+.list-card-item input[type="checkbox"]:checked {
+  accent-color: #5e8b7e;
+}
+
+.item-meta {
+  margin-left: 0.4rem;
+  font-size: 0.8rem;
+  color: #6b7280;
+  background: #f3f4f6;
+  padding: 0.1rem 0.4rem;
+  border-radius: 6px;
 }
 
 .remove-btn {
