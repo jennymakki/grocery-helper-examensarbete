@@ -121,12 +121,6 @@ async function addItem(newItem) {
             <button className="secondary-btn" onClick={saveTitle}>
               Save
             </button>
-            <button
-              className="secondary-btn"
-              onClick={() => setEditingTitle(false)}
-            >
-              Cancel
-            </button>
           </>
         ) : (
           <>

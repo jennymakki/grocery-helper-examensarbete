@@ -781,3 +781,31 @@ body {
   justify-content: center;
   margin-top: 2rem;
 }
+
+.loading-skeleton {
+  background-color: #ddd;
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.loading-skeleton::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: -150px;
+  height: 100%;
+  width: 150px;
+  background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+  animation: loading 1.2s infinite;
+}
+
+@keyframes loading {
+  from {
+    left: -150px;
+  }
+  to {
+    left: 100%;
+  }
+}
