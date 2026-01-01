@@ -707,7 +707,19 @@ body {
 }
 
 .filter-bar {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+  width: 100%;
   margin-bottom: 1rem;
+}
+
+.search-input {
+  flex: 1;
+}
+
+.filter-bar .primary-btn {
+  white-space: nowrap;
 }
 
 .search-input {

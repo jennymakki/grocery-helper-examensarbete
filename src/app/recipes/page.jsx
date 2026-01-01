@@ -25,15 +25,22 @@ export default function RecipesPage() {
       <h1 className="section-title">All Recipes</h1>
 
       {/* Search bar */}
-      <div className="filter-bar">
-        <input
-          type="text"
-          placeholder="Search recipes..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-input"
-        />
-      </div>
+      <form
+  className="filter-bar"
+  onSubmit={(e) => e.preventDefault()}
+>
+  <input
+    type="text"
+    placeholder="Search recipes..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    className="search-input"
+  />
+
+  <button type="submit" className="primary-btn">
+    Search
+  </button>
+</form>
 
       {/* Recipe Grid */}
       <div className="recipe-page-grid">
