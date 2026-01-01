@@ -2,96 +2,92 @@
 
 import { useSession, signIn } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import AddRecipeForm from "../components/AddRecipeForm";
 import RecipeCard from "../components/RecipeCard";
 import GroceryListCard from "../components/GroceryListCard";
 import CreateGroceryListForm from "../components/GroceryListForm";
-import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
+  const router = useRouter();
+
   const [recipes, setRecipes] = useState([]);
   const [loadingRecipes, setLoadingRecipes] = useState(true);
+
   const [groceryLists, setGroceryLists] = useState([]);
+  const [fetchingLists, setFetchingLists] = useState(false);
+
   const [showAddRecipe, setShowAddRecipe] = useState(false);
   const [showCreateList, setShowCreateList] = useState(false);
 
   const displayedRecipes = recipes.slice(0, 6);
-  const router = useRouter();
 
-  // Fetch recipes from API
-  const fetchRecipes = () => {
-    fetch("/api/recipes")
-      .then((res) => res.json())
-      .then((data) => {
-        setRecipes(data);
-        setLoadingRecipes(false);
-      })
-      .catch(() => setLoadingRecipes(false));
+  const fetchRecipes = async () => {
+    try {
+      setLoadingRecipes(true);
+      const res = await fetch("/api/recipes");
+      const data = await res.json();
+      setRecipes(data);
+    } catch (err) {
+      console.error("Failed to fetch recipes:", err);
+    } finally {
+      setLoadingRecipes(false);
+    }
   };
 
-  // Fetch grocery lists from API
-  const fetchGroceryLists = () => {
-    fetch("/api/grocery-lists")
-      .then((res) => res.json())
-      .then((data) => {
-        const normalized = data.map((list) => ({
-          ...list,
-          items: list.items.map((item) =>
-            typeof item === "string"
-              ? { name: item, quantity: "1", unit: "pcs", checked: false }
-              : {
-                  name: item.name || "",
-                  quantity: item.quantity || "1",
-                  unit: item.unit || "pcs",
-                  checked: item.checked || false,
-                }
-          ),
-        }));
-        setGroceryLists(normalized);
-      });
+  const fetchGroceryLists = async () => {
+    if (fetchingLists) return;
+    setFetchingLists(true);
+    try {
+      const res = await fetch("/api/grocery-lists");
+      const data = await res.json();
+      const normalized = data.map((list) => ({
+        ...list,
+        items: list.items.map((item) =>
+          typeof item === "string"
+            ? { name: item, quantity: "1", unit: "pcs", checked: false }
+            : {
+                name: item.name || "",
+                quantity: item.quantity || "1",
+                unit: item.unit || "pcs",
+                checked: item.checked || false,
+              }
+        ),
+      }));
+      setGroceryLists(normalized);
+    } catch (err) {
+      console.error("Failed to fetch grocery lists:", err);
+    } finally {
+      setFetchingLists(false);
+    }
   };
 
   const addIngredientsToList = async (recipe, listId, newListTitle) => {
     await fetch("/api/grocery-lists/add-ingredients", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        recipeId: recipe._id,
-        listId,
-        newListTitle,
-      }),
+      body: JSON.stringify({ recipeId: recipe._id, listId, newListTitle }),
     });
-
     fetchGroceryLists();
   };
 
-  // Add item to grocery list
-  const addItemToList = (listId, itemName) => {
-    fetch("/api/grocery-lists", {
+  const addItemToList = async (listId, itemName) => {
+    const res = await fetch("/api/grocery-lists", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: listId,
-        items: [{ name: itemName, checked: false }],
-      }),
-    })
-      .then((res) => res.json())
-      .then((updatedList) => {
-        setGroceryLists((prev) =>
-          prev.map((list) => (list._id === listId ? updatedList : list))
-        );
-      });
+      body: JSON.stringify({ id: listId, items: [{ name: itemName, checked: false }] }),
+    });
+    const updatedList = await res.json();
+    setGroceryLists((prev) =>
+      prev.map((list) => (list._id === listId ? updatedList : list))
+    );
   };
 
-  // Redirect to login if unauthenticated
   useEffect(() => {
-    if (status === "unauthenticated") {
-      signIn("google");
-    }
+    if (status === "unauthenticated") signIn("google");
   }, [status]);
 
-  // Fetch data when authenticated
   useEffect(() => {
     if (status === "authenticated") {
       fetchRecipes();
@@ -100,17 +96,13 @@ export default function DashboardPage() {
   }, [status]);
 
   if (status === "loading") return <p>Loading dashboard...</p>;
-  if (!session) return null; // prevents flash before redirect
+  if (!session) return null;
 
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
         {session.user.image && (
-          <img
-            src={session.user.image}
-            alt={session.user.name}
-            className="dashboard-avatar"
-          />
+          <img src={session.user.image} alt={session.user.name} className="dashboard-avatar" />
         )}
         <h1 className="dashboard-title">Welcome, {session.user.name}</h1>
       </div>
@@ -122,7 +114,10 @@ export default function DashboardPage() {
       <div className="dashboard-actions">
         <button
           className="primary-btn"
-          onClick={() => setShowAddRecipe((v) => !v)}
+          onClick={() => {
+            setShowAddRecipe((prev) => !prev);
+            setShowCreateList(false);
+          }}
         >
           {showAddRecipe ? "Close" : "Add New Recipe"}
         </button>
@@ -130,14 +125,15 @@ export default function DashboardPage() {
         <button
           className="secondary-btn"
           onClick={() => {
-            setShowCreateList((v) => !v);
-            setShowAddRecipe(false); // hide recipe form if open
+            setShowCreateList((prev) => !prev);
+            setShowAddRecipe(false);
           }}
         >
           {showCreateList ? "Close" : "Create Grocery List"}
         </button>
       </div>
 
+      {/* Forms */}
       {showCreateList && (
         <div className="dashboard-panel">
           <CreateGroceryListForm
@@ -164,9 +160,7 @@ export default function DashboardPage() {
       <section className="dashboard-section">
         <h2 className="section-title">Your Recipes</h2>
         {loadingRecipes && <p>Loading recipes...</p>}
-        {!loadingRecipes && recipes.length === 0 && (
-          <p>You haven’t added any recipes yet.</p>
-        )}
+        {!loadingRecipes && recipes.length === 0 && <p>You haven’t added any recipes yet.</p>}
 
         <div className="recipe-grid">
           {displayedRecipes.map((recipe) => (
@@ -185,10 +179,7 @@ export default function DashboardPage() {
 
         {recipes.length > 6 && (
           <div className="dashboard-view-all">
-            <button
-              className="primary-btn"
-              onClick={() => router.push("/recipes")}
-            >
+            <button className="primary-btn" onClick={() => router.push("/recipes")}>
               View all recipes
             </button>
           </div>
@@ -198,17 +189,11 @@ export default function DashboardPage() {
       {/* Grocery Lists Section */}
       <section className="dashboard-section">
         <h2 className="section-title">Your Grocery Lists</h2>
-        {groceryLists.length === 0 && (
-          <p>You haven’t created any grocery lists yet.</p>
-        )}
+        {groceryLists.length === 0 && <p>You haven’t created any grocery lists yet.</p>}
 
         <div className="list-grid">
           {groceryLists.map((list) => (
-            <GroceryListCard
-              key={list._id}
-              list={list}
-              onChange={fetchGroceryLists}
-            />
+            <GroceryListCard key={list._id} list={list} onChange={fetchGroceryLists} />
           ))}
         </div>
       </section>

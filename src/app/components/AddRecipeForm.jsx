@@ -123,8 +123,8 @@ export default function AddRecipeForm({ onCreated }) {
             <option value="ml">ml</option>
             <option value="l">l</option>
           </select>
-          <button type="button" className="secondary-btn add-btn" onClick={addIngredient}>
-            Add ingredient
+          <button type="button" className="add-ingredient" onClick={addIngredient}>
+            Add Ingredient
           </button>
         </div>
 

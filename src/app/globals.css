@@ -190,7 +190,9 @@ body {
   justify-content: center;
 }
 
-.primary-btn {
+.primary-btn,
+.add-ingredient,
+.primary-list-btn {
   background-color: #397b6b;
   color: white;
   padding: 0.8rem 1.8rem;
@@ -206,7 +208,8 @@ body {
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
-.secondary-btn {
+.secondary-btn,
+.create-list-button{
   background-color: transparent;
   border: 1px solid #5e8b7e;
   color: #397b6b;
@@ -383,7 +386,7 @@ body {
   .ingredient-row select,
   .ingredient-row button {
     flex: 1 1 100%;
-    font-size: 0.9rem;
+    font-size: 1rem;
     line-height: 1.2;
     min-height: auto;
     margin: 0.7rem 0 0.7rem 0;
@@ -417,7 +420,7 @@ body {
 }
 
 .list-card button {
-  background: transparent;
+  background: tansparent;
   border: none;
   cursor: pointer;
 }
@@ -471,9 +474,9 @@ body {
 
 
 .list-card-add-item button {
-  flex-shrink: 0; /* prevent shrinking */
-  min-width: 60px; /* ensure visible width */
-  background-color: #5e8b7e; /* reapply green */
+  flex-shrink: 0;
+  min-width: 60px;
+  background-color: #397b6b; 
   color: white;
 }
 

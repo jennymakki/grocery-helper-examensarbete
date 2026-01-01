@@ -1,15 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import AddListItemForm from "./AddListItemForm";
 
 export default function GroceryListCard({ list, onChange }) {
   const [editingTitle, setEditingTitle] = useState(false);
   const [title, setTitle] = useState(list.title);
-
-  // New item input states
-  const [newItem, setNewItem] = useState("");
-  const [newQuantity, setNewQuantity] = useState("");
-  const [newUnit, setNewUnit] = useState("pcs");
 
   // Local items state for rendering & updates
   const [items, setItems] = useState([]);
@@ -37,29 +33,16 @@ export default function GroceryListCard({ list, onChange }) {
   }
 
   // Add a new item
-  async function addItem() {
-    if (!newItem.trim()) return;
-
-    const updatedItems = [
-      ...items,
-      {
-        name: newItem.trim(),
-        quantity: newQuantity.trim() || "1",
-        unit: newUnit,
-        checked: false,
-      },
-    ];
-
+  async function addItem(item) {
+    const updatedItems = [...items, item];
+  
     await fetch("/api/grocery-lists", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: list._id, items: updatedItems }),
     });
-
+  
     setItems(updatedItems);
-    setNewItem("");
-    setNewQuantity("");
-    setNewUnit("pcs");
     onChange();
   }
 
@@ -167,37 +150,7 @@ export default function GroceryListCard({ list, onChange }) {
         })}
       </ul>
 
-      {/* Add Item */}
-      <div className="list-card-add-item">
-        <input
-          className="list-card-input"
-          placeholder="Ingredient"
-          value={newItem}
-          onChange={(e) => setNewItem(e.target.value)}
-        />
-        <input
-          type="number"
-          className="list-card-input quantity-input"
-          placeholder="Quantity"
-          value={newQuantity}
-          onChange={(e) => setNewQuantity(e.target.value)}
-          min="0"
-        />
-        <select
-          className="list-card-select"
-          value={newUnit}
-          onChange={(e) => setNewUnit(e.target.value)}
-        >
-          <option value="pcs">pcs</option>
-          <option value="g">g</option>
-          <option value="kg">kg</option>
-          <option value="ml">ml</option>
-          <option value="l">l</option>
-        </select>
-        <button className="primary-btn" onClick={addItem}>
-          Add
-        </button>
-      </div>
+      <AddListItemForm onAdd={addItem} />
 
       <button
         className="secondary-btn remove-btn full-width"
