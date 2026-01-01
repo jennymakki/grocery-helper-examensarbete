@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import LoadingSkeleton from "../components/LoadingSkeleton";
+import LoadingSkeleton from "./components/LoadingSkeleton";
 
 export default function Home() {
   const { data: session, status } = useSession();
