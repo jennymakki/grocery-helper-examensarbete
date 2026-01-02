@@ -8,7 +8,6 @@ export default function CreateGroceryListForm({ onCreated }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Add item
   function addItem(item) {
     setItems((prev) => [...prev, item]);
   }

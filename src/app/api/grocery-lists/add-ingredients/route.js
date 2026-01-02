@@ -21,7 +21,10 @@ export async function POST(req) {
   if (listId) {
     list = await GroceryList.findOne({ _id: listId, userId: session.user.id });
     if (!list)
-      return Response.json({ error: "Grocery list not found" }, { status: 404 });
+      return Response.json(
+        { error: "Grocery list not found" },
+        { status: 404 }
+      );
   } else {
     list = await GroceryList.create({
       userId: session.user.id,
@@ -42,9 +45,7 @@ export async function POST(req) {
 
     if (existing) {
       // Merge quantities
-      existing.quantity = (
-        parseFloat(existing.quantity) + quantity
-      ).toString();
+      existing.quantity = (parseFloat(existing.quantity) + quantity).toString();
     } else {
       // Add new item
       list.items.push({

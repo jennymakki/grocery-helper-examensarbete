@@ -53,7 +53,11 @@ export default function AddListItemForm({ onAdd }) {
         <option value="l">l</option>
       </select>
 
-      <button type="button" className="secondary-btn add-btn" onClick={handleAdd}>
+      <button
+        type="button"
+        className="secondary-btn add-btn"
+        onClick={handleAdd}
+      >
         Add
       </button>
     </div>

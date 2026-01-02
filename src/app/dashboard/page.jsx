@@ -77,7 +77,10 @@ export default function DashboardPage() {
     const res = await fetch("/api/grocery-lists", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: listId, items: [{ name: itemName, checked: false }] }),
+      body: JSON.stringify({
+        id: listId,
+        items: [{ name: itemName, checked: false }],
+      }),
     });
     const updatedList = await res.json();
     setGroceryLists((prev) =>
@@ -103,9 +106,17 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="dashboard-header">
         {session.user.image ? (
-          <img src={session.user.image} alt={session.user.name} className="dashboard-avatar" />
+          <img
+            src={session.user.image}
+            alt={session.user.name}
+            className="dashboard-avatar"
+          />
         ) : (
-          <LoadingSkeleton width="3rem" height="3rem" style={{ borderRadius: "50%" }} />
+          <LoadingSkeleton
+            width="3rem"
+            height="3rem"
+            style={{ borderRadius: "50%" }}
+          />
         )}
         <h1 className="dashboard-title">
           {session.user.name || <LoadingSkeleton width="200px" height="2rem" />}
@@ -170,8 +181,16 @@ export default function DashboardPage() {
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="recipe-card">
                 <LoadingSkeleton width="100%" height="8rem" />
-                <LoadingSkeleton width="80%" height="1.2rem" style={{ marginTop: "0.5rem" }} />
-                <LoadingSkeleton width="60%" height="1rem" style={{ marginTop: "0.25rem" }} />
+                <LoadingSkeleton
+                  width="80%"
+                  height="1.2rem"
+                  style={{ marginTop: "0.5rem" }}
+                />
+                <LoadingSkeleton
+                  width="60%"
+                  height="1rem"
+                  style={{ marginTop: "0.25rem" }}
+                />
               </div>
             ))}
           </div>
@@ -196,7 +215,10 @@ export default function DashboardPage() {
 
         {recipes.length > 6 && (
           <div className="dashboard-view-all">
-            <button className="primary-btn" onClick={() => router.push("/recipes")}>
+            <button
+              className="primary-btn"
+              onClick={() => router.push("/recipes")}
+            >
               View all recipes
             </button>
           </div>
@@ -228,7 +250,11 @@ export default function DashboardPage() {
         ) : (
           <div className="list-grid">
             {groceryLists.map((list) => (
-              <GroceryListCard key={list._id} list={list} onChange={fetchGroceryLists} />
+              <GroceryListCard
+                key={list._id}
+                list={list}
+                onChange={fetchGroceryLists}
+              />
             ))}
           </div>
         )}

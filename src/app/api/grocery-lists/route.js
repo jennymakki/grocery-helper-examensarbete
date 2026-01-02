@@ -19,26 +19,30 @@ export async function GET() {
 
 // POST – create list
 export async function POST(req) {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    }
-  
-    const { title, items } = await req.json(); // <--- make sure you read items here
-    if (!title) {
-      return new Response(JSON.stringify({ error: "Title is required" }), { status: 400 });
-    }
-  
-    await dbConnect();
-  
-    const newList = await GroceryList.create({
-      userId: session.user.id,
-      title,
-      items: items || [], // <--- save the items array here
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
     });
-  
-    return new Response(JSON.stringify(newList), { status: 201 });
   }
+
+  const { title, items } = await req.json();
+  if (!title) {
+    return new Response(JSON.stringify({ error: "Title is required" }), {
+      status: 400,
+    });
+  }
+
+  await dbConnect();
+
+  const newList = await GroceryList.create({
+    userId: session.user.id,
+    title,
+    items: items || [],
+  });
+
+  return new Response(JSON.stringify(newList), { status: 201 });
+}
 
 // PUT – update items
 export async function PUT(req) {

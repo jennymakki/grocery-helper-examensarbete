@@ -62,7 +62,6 @@ export default function AddRecipeForm({ onCreated }) {
 
   return (
     <form onSubmit={handleSubmit} className="recipe-form">
-
       {/* Title */}
       <input
         type="text"
@@ -118,7 +117,11 @@ export default function AddRecipeForm({ onCreated }) {
           <option value="ml">ml</option>
           <option value="l">l</option>
         </select>
-        <button type="button" className="secondary-btn add-btn" onClick={addIngredient}>
+        <button
+          type="button"
+          className="secondary-btn add-btn"
+          onClick={addIngredient}
+        >
           Add
         </button>
       </div>
@@ -128,9 +131,16 @@ export default function AddRecipeForm({ onCreated }) {
         {ingredientsList.map((ing, idx) => (
           <li key={idx} className="ingredient-item">
             <span>
-              {ing.name} {ing.quantity !== "1" || ing.unit !== "pcs" ? `${ing.quantity} ${ing.unit}` : ""}
+              {ing.name}{" "}
+              {ing.quantity !== "1" || ing.unit !== "pcs"
+                ? `${ing.quantity} ${ing.unit}`
+                : ""}
             </span>
-            <button type="button" className="remove-btn" onClick={() => removeIngredient(idx)}>
+            <button
+              type="button"
+              className="remove-btn"
+              onClick={() => removeIngredient(idx)}
+            >
               ✕
             </button>
           </li>

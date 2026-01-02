@@ -18,18 +18,21 @@ export async function GET() {
 
   await dbConnect();
 
-  const recipes = await Recipe.find({ userId: session.user.id }).sort({ createdAt: -1 });
+  const recipes = await Recipe.find({ userId: session.user.id }).sort({
+    createdAt: -1,
+  });
   return NextResponse.json(recipes);
 }
 
-// POST – create recipe (WITH optional image)
+// POST – create recipe
 export async function POST(req) {
   const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   await dbConnect();
 
-  const formData = await req.formData(); // Web standard FormData
+  const formData = await req.formData();
   const title = formData.get("title");
   const link = formData.get("link");
   const ingredients = JSON.parse(formData.get("ingredients") || "[]");
@@ -58,7 +61,7 @@ export async function PUT(req) {
 
   await dbConnect();
 
-  const formData = await req.formData(); // Web FormData API
+  const formData = await req.formData();
   const id = formData.get("id");
   const title = formData.get("title");
   const ingredients = JSON.parse(formData.get("ingredients") || "[]");

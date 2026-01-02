@@ -22,18 +22,14 @@ export default function Header() {
 
         {session ? (
           <button
-  onClick={() =>
-    signOut({ callbackUrl: "/" })
-  }
-  className="header-login"
->
-  Sign out
-</button>
+            onClick={() => signOut({ callbackUrl: "/" })}
+            className="header-login"
+          >
+            Sign out
+          </button>
         ) : (
           <button
-            onClick={() =>
-              signIn("google", { callbackUrl: "/dashboard" })
-            }
+            onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
             className="header-login"
           >
             Sign in

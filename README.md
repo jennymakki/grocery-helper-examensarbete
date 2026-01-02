@@ -96,6 +96,9 @@ NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=your_secret
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
+CLOUDINARY_CLOUD_NAME=your_name
+CLOUDINARY_API_KEY=your_cloudinnary_key
+CLOUDINARY_API_SECRET=your_cloudinary_secret
 
 ---
 

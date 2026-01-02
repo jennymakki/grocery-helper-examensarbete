@@ -83,8 +83,16 @@ export default function RecipesPage() {
           Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="recipe-card">
               <LoadingSkeleton width="100%" height="8rem" />
-              <LoadingSkeleton width="80%" height="1.2rem" style={{ marginTop: "0.5rem" }} />
-              <LoadingSkeleton width="60%" height="1rem" style={{ marginTop: "0.25rem" }} />
+              <LoadingSkeleton
+                width="80%"
+                height="1.2rem"
+                style={{ marginTop: "0.5rem" }}
+              />
+              <LoadingSkeleton
+                width="60%"
+                height="1rem"
+                style={{ marginTop: "0.25rem" }}
+              />
             </div>
           ))
         ) : displayedRecipes.length > 0 ? (
@@ -104,7 +112,10 @@ export default function RecipesPage() {
 
       {/* Back Button */}
       <div className="page-end">
-        <button className="primary-btn" onClick={() => router.push("/dashboard")}>
+        <button
+          className="primary-btn"
+          onClick={() => router.push("/dashboard")}
+        >
           ← Back to Start
         </button>
       </div>
