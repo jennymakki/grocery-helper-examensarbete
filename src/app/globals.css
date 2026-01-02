@@ -543,11 +543,13 @@ body {
   /* Ingredient takes full row */
   .list-card-add-item .list-card-input:not(.quantity-input) {
     flex: 1 1 100%;
+    padding-left: 0.5rem
   }
 
   /* Bottom row */
   .list-card-add-item .quantity-input {
     flex: 1 1 30%;
+    padding-left: 0.5rem
   }
 
   .list-card-select {
@@ -823,4 +825,5 @@ body {
 .recipe-form input.full-width {
   display: block;
   margin-bottom: 0.8rem;
+  padding-left: 0.5rem;
 }
