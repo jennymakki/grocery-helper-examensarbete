@@ -27,6 +27,8 @@ export default function RecipeCard({
     recipe.image || "/recipe-placeholder.png"
   );
 
+  const [showAllIngredients, setShowAllIngredients] = useState(false);
+
   // New ingredient state
   const [newIngredientName, setNewIngredientName] = useState("");
   const [newIngredientQty, setNewIngredientQty] = useState("");
@@ -101,6 +103,13 @@ export default function RecipeCard({
   function removeIngredient(idx) {
     setIngredientsList(ingredientsList.filter((_, i) => i !== idx));
   }
+
+  const ingredients = recipe.ingredients || [];
+const visibleIngredients = showAllIngredients
+  ? ingredients
+  : ingredients.slice(0, 3);
+
+const hiddenCount = ingredients.length - 3;
 
   return (
     <div className="recipe-card">
@@ -282,15 +291,26 @@ export default function RecipeCard({
           )}
 
           {/* Ingredients Pills */}
-          {recipe.ingredients?.length > 0 && (
-            <div className="ingredients-pills">
-              {recipe.ingredients.map((ing, idx) => (
-                <span key={idx} className="pill">
-                  {ing.name} {ing.quantity} {ing.unit}
-                </span>
-              ))}
-            </div>
-          )}
+          {ingredients.length > 0 && (
+  <div className="ingredients-pills">
+    {visibleIngredients.map((ing, idx) => (
+      <span key={idx} className="pill">
+        {ing.name} {ing.quantity} {ing.unit}
+      </span>
+    ))}
+
+    {ingredients.length > 3 && (
+      <button
+        className="pill show-more-pill"
+        onClick={() => setShowAllIngredients((prev) => !prev)}
+      >
+        {showAllIngredients
+          ? "Show less"
+          : `+ ${hiddenCount} more`}
+      </button>
+    )}
+  </div>
+)}
 
           {/* Action Buttons */}
           <div className="recipe-card-actions">

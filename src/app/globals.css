@@ -587,6 +587,16 @@ body {
   font-size: 0.9rem;
 }
 
+.show-more-pill {
+  cursor: pointer;
+  background-color: #f0fdf4;
+  color: #065f46;
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  border: 1px dashed #34d399;
+}
+
 .recipe-card-actions {
   display: flex;
   flex-wrap: wrap;

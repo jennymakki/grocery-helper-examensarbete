@@ -6,6 +6,7 @@ import AddListItemForm from "./AddListItemForm";
 export default function GroceryListCard({ list, onChange }) {
   const [editingTitle, setEditingTitle] = useState(false);
   const [title, setTitle] = useState(list.title);
+  const [expanded, setExpanded] = useState(false);
 
   // Local items state for rendering & updates
   const [items, setItems] = useState([]);
@@ -32,38 +33,40 @@ export default function GroceryListCard({ list, onChange }) {
     onChange();
   }
 
-// Add a new item, merging duplicates
-async function addItem(newItem) {
-  const updatedItems = [...items];
+  // Add a new item, merging duplicates
+  async function addItem(newItem) {
+    const updatedItems = [...items];
 
-  // Check if item with same name & unit exists
-  const existingIndex = updatedItems.findIndex(
-    (i) => i.name.toLowerCase() === newItem.name.toLowerCase() && i.unit === newItem.unit
-  );
+    // Check if item with same name & unit exists
+    const existingIndex = updatedItems.findIndex(
+      (i) =>
+        i.name.toLowerCase() === newItem.name.toLowerCase() &&
+        i.unit === newItem.unit
+    );
 
-  if (existingIndex > -1) {
-    // Merge quantities
-    const existing = updatedItems[existingIndex];
-    const existingQty = parseFloat(existing.quantity) || 0;
-    const newQty = parseFloat(newItem.quantity) || 0;
-    updatedItems[existingIndex] = {
-      ...existing,
-      quantity: (existingQty + newQty).toString(),
-    };
-  } else {
-    updatedItems.push(newItem);
+    if (existingIndex > -1) {
+      // Merge quantities
+      const existing = updatedItems[existingIndex];
+      const existingQty = parseFloat(existing.quantity) || 0;
+      const newQty = parseFloat(newItem.quantity) || 0;
+      updatedItems[existingIndex] = {
+        ...existing,
+        quantity: (existingQty + newQty).toString(),
+      };
+    } else {
+      updatedItems.push(newItem);
+    }
+
+    // Save to API
+    await fetch("/api/grocery-lists", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: list._id, items: updatedItems }),
+    });
+
+    setItems(updatedItems);
+    onChange();
   }
-
-  // Save to API
-  await fetch("/api/grocery-lists", {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ id: list._id, items: updatedItems }),
-  });
-
-  setItems(updatedItems);
-  onChange();
-}
 
   // Toggle checked state
   async function toggleItem(index) {
@@ -124,53 +127,72 @@ async function addItem(newItem) {
           </>
         ) : (
           <>
-            <h3>{title}</h3>
-            <button
-              className="secondary-btn"
-              onClick={() => setEditingTitle(true)}
+            <h3
+              style={{ cursor: "pointer" }}
+              onClick={() => setExpanded((prev) => !prev)}
             >
-              Edit
-            </button>
+              {title}
+            </h3>
+
+            <div className="header-actions">
+              <button
+                className="secondary-btn"
+                onClick={() => setEditingTitle(true)}
+              >
+                Edit
+              </button>
+
+              <button
+                className="secondary-btn"
+                onClick={() => setExpanded((prev) => !prev)}
+              >
+                {expanded ? "Hide" : "Show"}
+              </button>
+            </div>
           </>
         )}
       </div>
 
       {/* Items */}
-      <ul className="list-card-items">
-        {items.map((item, idx) => {
-          const { name, quantity, unit, checked } = item;
-          return (
-            <li key={idx} className="list-card-item">
-              <input
-                type="checkbox"
-                checked={checked}
-                onChange={() => toggleItem(idx)}
-              />
-              <span className={checked ? "checked" : ""}>
-                {name}
-                <span className="item-meta">
-                  {quantity} {unit}
-                </span>
-              </span>
-              <button
-                className="secondary-btn remove-btn"
-                onClick={() => removeItem(idx)}
-              >
-                ✕
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+      {expanded && (
+        <>
+          <ul className="list-card-items">
+            {items.map((item, idx) => {
+              const { name, quantity, unit, checked } = item;
+              return (
+                <li key={idx} className="list-card-item">
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={() => toggleItem(idx)}
+                  />
+                  <span className={checked ? "checked" : ""}>
+                    {name}
+                    <span className="item-meta">
+                      {quantity} {unit}
+                    </span>
+                  </span>
+                  <button
+                    className="secondary-btn remove-btn"
+                    onClick={() => removeItem(idx)}
+                  >
+                    ✕
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
 
-      <AddListItemForm onAdd={addItem} />
+          <AddListItemForm onAdd={addItem} />
 
-      <button
-        className="secondary-btn remove-btn full-width"
-        onClick={removeList}
-      >
-        Delete list
-      </button>
+          <button
+            className="secondary-btn remove-btn full-width"
+            onClick={removeList}
+          >
+            Delete list
+          </button>
+        </>
+      )}
     </div>
   );
 }
