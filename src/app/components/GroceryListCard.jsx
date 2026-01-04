@@ -4,14 +4,12 @@ import { useState, useEffect } from "react";
 import AddListItemForm from "./AddListItemForm";
 
 export default function GroceryListCard({ list, onChange }) {
-  const [editingTitle, setEditingTitle] = useState(false);
-  const [title, setTitle] = useState(list.title);
   const [expanded, setExpanded] = useState(false);
 
-  // Local items state for rendering & updates
+  // Local items state (UI source of truth)
   const [items, setItems] = useState([]);
 
-  // Normalize items whenever list.items changes
+  // Initialize local state ONCE per list
   useEffect(() => {
     const normalized = (list.items || []).map((item) => ({
       name: item.name || (typeof item === "string" ? item : ""),
@@ -19,25 +17,23 @@ export default function GroceryListCard({ list, onChange }) {
       unit: item.unit || "pcs",
       checked: item.checked || false,
     }));
-    setItems(normalized);
-  }, [list.items]);
 
-  // Save updated list title
-  async function saveTitle() {
+    setItems(normalized);
+  }, [list._id]);
+
+  // ---------- API helper ----------
+  async function updateList(data) {
     await fetch("/api/grocery-lists", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: list._id, title }),
+      body: JSON.stringify({ id: list._id, ...data }),
     });
-    setEditingTitle(false);
-    onChange();
   }
 
-  // Add a new item, merging duplicates
+  // ---------- Items ----------
   async function addItem(newItem) {
     const updatedItems = [...items];
 
-    // Check if item with same name & unit exists
     const existingIndex = updatedItems.findIndex(
       (i) =>
         i.name.toLowerCase() === newItem.name.toLowerCase() &&
@@ -45,10 +41,10 @@ export default function GroceryListCard({ list, onChange }) {
     );
 
     if (existingIndex > -1) {
-      // Merge quantities
       const existing = updatedItems[existingIndex];
       const existingQty = parseFloat(existing.quantity) || 0;
       const newQty = parseFloat(newItem.quantity) || 0;
+
       updatedItems[existingIndex] = {
         ...existing,
         quantity: (existingQty + newQty).toString(),
@@ -57,47 +53,27 @@ export default function GroceryListCard({ list, onChange }) {
       updatedItems.push(newItem);
     }
 
-    // Save to API
-    await fetch("/api/grocery-lists", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: list._id, items: updatedItems }),
-    });
-
-    setItems(updatedItems);
-    onChange();
+    setItems(updatedItems);          // UI first
+    await updateList({ items: updatedItems });
   }
 
-  // Toggle checked state
   async function toggleItem(index) {
-    const updatedItems = [...items];
-    updatedItems[index].checked = !updatedItems[index].checked;
-
-    await fetch("/api/grocery-lists", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: list._id, items: updatedItems }),
-    });
+    const updatedItems = items.map((item, i) =>
+      i === index ? { ...item, checked: !item.checked } : item
+    );
 
     setItems(updatedItems);
-    onChange();
+    await updateList({ items: updatedItems });
   }
 
-  // Remove item
   async function removeItem(index) {
     const updatedItems = items.filter((_, i) => i !== index);
 
-    await fetch("/api/grocery-lists", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: list._id, items: updatedItems }),
-    });
-
     setItems(updatedItems);
-    onChange();
+    await updateList({ items: updatedItems });
   }
 
-  // Delete entire list
+  // ---------- Delete ----------
   async function removeList() {
     if (!confirm("Delete this grocery list?")) return;
 
@@ -107,87 +83,63 @@ export default function GroceryListCard({ list, onChange }) {
       body: JSON.stringify({ id: list._id }),
     });
 
-    onChange();
+    onChange(); // parent must refetch / remove card
   }
 
   return (
     <div className="list-card">
-      {/* Title */}
+      {/* Header */}
       <div className="list-card-header">
-        {editingTitle ? (
-          <>
-            <input
-              className="list-card-input"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-            <button type="button" className="secondary-btn" onClick={saveTitle}>
-              Save
-            </button>
-          </>
-        ) : (
-          <>
-            <h3
-              style={{ cursor: "pointer" }}
-              onClick={() => setExpanded((prev) => !prev)}
-            >
-              {title}
-            </h3>
+        <h3
+          style={{ cursor: "pointer" }}
+          onClick={() => setExpanded((prev) => !prev)}
+        >
+          {list.title}
+        </h3>
 
-            <div className="header-actions">
-              <button
-              type="button"
-                className="secondary-btn"
-                onClick={() => setEditingTitle(true)}
-              >
-                Edit
-              </button>
-
-              <button type="button"
-                className="secondary-btn"
-                onClick={() => setExpanded((prev) => !prev)}
-              >
-                {expanded ? "Hide" : "Show"}
-              </button>
-            </div>
-          </>
-        )}
+        <div className="header-actions">
+          <button
+            type="button"
+            className="secondary-btn"
+            onClick={() => setExpanded((prev) => !prev)}
+          >
+            {expanded ? "Hide" : "Show"}
+          </button>
+        </div>
       </div>
 
       {/* Items */}
       {expanded && (
         <>
           <ul className="list-card-items">
-            {items.map((item, idx) => {
-              const { name, quantity, unit, checked } = item;
-              return (
-                <li key={idx} className="list-card-item">
-                  <input
-                    type="checkbox"
-                    checked={checked}
-                    onChange={() => toggleItem(idx)}
-                  />
-                  <span className={checked ? "checked" : ""}>
-                    {name}
-                    <span className="item-meta">
-                      {quantity} {unit}
-                    </span>
+            {items.map((item, idx) => (
+              <li key={idx} className="list-card-item">
+                <input
+                  type="checkbox"
+                  checked={item.checked}
+                  onChange={() => toggleItem(idx)}
+                />
+                <span className={item.checked ? "checked" : ""}>
+                  {item.name}
+                  <span className="item-meta">
+                    {item.quantity} {item.unit}
                   </span>
-                  <button
-                    className="secondary-btn remove-btn"
-                    onClick={() => removeItem(idx)}
-                  >
-                    ✕
-                  </button>
-                </li>
-              );
-            })}
+                </span>
+                <button
+                  type="button"
+                  className="secondary-btn remove-btn"
+                  onClick={() => removeItem(idx)}
+                >
+                  ✕
+                </button>
+              </li>
+            ))}
           </ul>
 
           <AddListItemForm onAdd={addItem} />
 
           <button
-          type="button"
+            type="button"
             className="secondary-btn remove-btn full-width"
             onClick={removeList}
           >

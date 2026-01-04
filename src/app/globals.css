@@ -371,6 +371,12 @@ body {
   font-size: 1rem;
 }
 
+.header-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .secondary-btn:hover {
   background-color: var(--brand-soft);
 }
@@ -437,7 +443,7 @@ body {
 
 .list-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: 1fr;
   gap: 1.2rem;
 }
 
