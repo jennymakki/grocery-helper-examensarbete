@@ -75,7 +75,7 @@ export default function AddRecipeForm({ onCreated }) {
       />
   
       {/* Link */}
-      <label htmlFor="link" className="recipe-label">Recipe Link (optinal)</label>
+      <label htmlFor="link" className="recipe-label">Recipe Link (optional)</label>
       <input
         id="link"
         type="url"
