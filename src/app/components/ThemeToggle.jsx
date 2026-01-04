@@ -30,7 +30,11 @@ export default function ThemeToggle() {
       aria-label="Toggle theme"
       className="header-theme-toggle"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+      >
         <path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" />
       </svg>
     </button>
