@@ -2,6 +2,7 @@
 
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Header() {
   const { data: session } = useSession();
@@ -20,21 +21,25 @@ export default function Header() {
           Grocery <span>Helper</span>
         </span>
 
-        {session ? (
-          <button
-            onClick={() => signOut({ callbackUrl: "/" })}
-            className="header-login"
-          >
-            Sign out
-          </button>
-        ) : (
-          <button
-            onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
-            className="header-login"
-          >
-            Sign in
-          </button>
-        )}
+        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+          {session ? (
+            <button
+              onClick={() => signOut({ callbackUrl: "/" })}
+              className="header-login"
+            >
+              Sign out
+            </button>
+          ) : (
+            <button
+              onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+              className="header-login"
+            >
+              Sign in
+            </button>
+          )}
+
+          <ThemeToggle /> {}
+        </div>
       </div>
     </header>
   );

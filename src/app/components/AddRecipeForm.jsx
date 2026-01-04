@@ -63,7 +63,9 @@ export default function AddRecipeForm({ onCreated }) {
   return (
     <form onSubmit={handleSubmit} className="recipe-form">
       {/* Title */}
+      <label htmlFor="title" className="recipe-label">Recipe Title</label>
       <input
+        id="title"
         type="text"
         placeholder="Recipe Title"
         value={title}
@@ -71,34 +73,42 @@ export default function AddRecipeForm({ onCreated }) {
         className="recipe-input full-width"
         required
       />
-
+  
       {/* Link */}
+      <label htmlFor="link" className="recipe-label">Recipe Link (optinal)</label>
       <input
+        id="link"
         type="url"
-        placeholder="Recipe Link (optional)"
+        placeholder="https://recipe.com"
         value={link}
         onChange={(e) => setLink(e.target.value)}
         className="recipe-input full-width"
       />
-
+  
       {/* Image */}
+      <label htmlFor="image" className="recipe-label">Recipe Image (optional)</label>
       <input
+        id="image"
         type="file"
         accept="image/*"
         onChange={(e) => setImageFile(e.target.files[0])}
         className="recipe-input full-width"
       />
-
+  
       {/* Ingredient Row */}
+      <label className="recipe-label">Add Ingredient</label>
       <div className="list-card-add-item">
         <input
+          id="ingredient-name"
           type="text"
           placeholder="Ingredient"
           value={newIngredient}
           onChange={(e) => setNewIngredient(e.target.value)}
           className="list-card-input"
         />
+  
         <input
+          id="ingredient-quantity"
           type="number"
           placeholder="Quantity"
           value={newQuantity}
@@ -106,7 +116,9 @@ export default function AddRecipeForm({ onCreated }) {
           className="list-card-input quantity-input"
           min="0"
         />
+  
         <select
+          id="ingredient-unit"
           value={newUnit}
           onChange={(e) => setNewUnit(e.target.value)}
           className="list-card-select"
@@ -117,6 +129,7 @@ export default function AddRecipeForm({ onCreated }) {
           <option value="ml">ml</option>
           <option value="l">l</option>
         </select>
+  
         <button
           type="button"
           className="secondary-btn add-btn"
@@ -125,7 +138,7 @@ export default function AddRecipeForm({ onCreated }) {
           Add
         </button>
       </div>
-
+  
       {/* List of Added Ingredients */}
       <ul className="ingredient-list">
         {ingredientsList.map((ing, idx) => (
@@ -146,7 +159,7 @@ export default function AddRecipeForm({ onCreated }) {
           </li>
         ))}
       </ul>
-
+  
       {/* Submit */}
       <button type="submit" className="primary-btn" disabled={loading}>
         {loading ? "Saving…" : "Save Recipe"}
