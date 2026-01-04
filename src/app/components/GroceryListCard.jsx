@@ -5,11 +5,8 @@ import AddListItemForm from "./AddListItemForm";
 
 export default function GroceryListCard({ list, onChange }) {
   const [expanded, setExpanded] = useState(false);
-
-  // Local items state (UI source of truth)
   const [items, setItems] = useState([]);
 
-  // Initialize local state ONCE per list
   useEffect(() => {
     const normalized = (list.items || []).map((item) => ({
       name: item.name || (typeof item === "string" ? item : ""),
@@ -21,7 +18,6 @@ export default function GroceryListCard({ list, onChange }) {
     setItems(normalized);
   }, [list._id]);
 
-  // ---------- API helper ----------
   async function updateList(data) {
     await fetch("/api/grocery-lists", {
       method: "PUT",
@@ -30,7 +26,6 @@ export default function GroceryListCard({ list, onChange }) {
     });
   }
 
-  // ---------- Items ----------
   async function addItem(newItem) {
     const updatedItems = [...items];
 
@@ -53,7 +48,7 @@ export default function GroceryListCard({ list, onChange }) {
       updatedItems.push(newItem);
     }
 
-    setItems(updatedItems);          // UI first
+    setItems(updatedItems);
     await updateList({ items: updatedItems });
   }
 
@@ -73,7 +68,6 @@ export default function GroceryListCard({ list, onChange }) {
     await updateList({ items: updatedItems });
   }
 
-  // ---------- Delete ----------
   async function removeList() {
     if (!confirm("Delete this grocery list?")) return;
 
@@ -83,7 +77,7 @@ export default function GroceryListCard({ list, onChange }) {
       body: JSON.stringify({ id: list._id }),
     });
 
-    onChange(); // parent must refetch / remove card
+    onChange();
   }
 
   return (
