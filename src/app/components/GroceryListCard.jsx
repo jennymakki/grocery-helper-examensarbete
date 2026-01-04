@@ -121,7 +121,7 @@ export default function GroceryListCard({ list, onChange }) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
-            <button className="secondary-btn" onClick={saveTitle}>
+            <button type="button" className="secondary-btn" onClick={saveTitle}>
               Save
             </button>
           </>
@@ -143,7 +143,7 @@ export default function GroceryListCard({ list, onChange }) {
                 Edit
               </button>
 
-              <button
+              <button type="button"
                 className="secondary-btn"
                 onClick={() => setExpanded((prev) => !prev)}
               >
