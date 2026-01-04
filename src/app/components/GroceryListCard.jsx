@@ -186,6 +186,7 @@ export default function GroceryListCard({ list, onChange }) {
           <AddListItemForm onAdd={addItem} />
 
           <button
+          type="button"
             className="secondary-btn remove-btn full-width"
             onClick={removeList}
           >

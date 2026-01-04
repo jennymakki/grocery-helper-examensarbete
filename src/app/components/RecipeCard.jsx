@@ -312,13 +312,20 @@ export default function RecipeCard({
 
           {/* Action Buttons */}
           <div className="recipe-card-actions">
-            <button className="secondary-btn" onClick={() => setEditing(true)}>
+            <button
+              type="button"
+              className="secondary-btn"
+              onClick={() => setEditing(true)}
+            >
               Edit
             </button>
-            <button className="secondary-btn" onClick={remove}>
+
+            <button type="button" className="secondary-btn" onClick={remove}>
               Delete
             </button>
+
             <button
+              type="button"
               className="secondary-btn"
               onClick={() => setShowAddToList((v) => !v)}
             >
