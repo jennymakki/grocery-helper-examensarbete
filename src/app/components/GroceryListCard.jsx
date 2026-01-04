@@ -136,6 +136,7 @@ export default function GroceryListCard({ list, onChange }) {
 
             <div className="header-actions">
               <button
+              type="button"
                 className="secondary-btn"
                 onClick={() => setEditingTitle(true)}
               >
