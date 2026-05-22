@@ -87,6 +87,56 @@ Users can manually create grocery lists or add ingredients directly from recipes
   userId: String
 }
 ```
+
+---
+
+##  API Architecture
+
+The application is built with a structured API layer using Next.js Route Handlers.
+
+The backend is divided into three main domains:
+
+###  Authentication
+- Handled via NextAuth.js
+- Google OAuth provider
+- MongoDB session persistence
+- Protects all user-specific routes
+
+---
+
+###  Recipes API
+- `GET /api/recipes` → fetch user recipes
+- `POST /api/recipes` → create recipe (with Cloudinary image upload)
+- `PUT /api/recipes` → update recipe
+- `DELETE /api/recipes` → delete recipe
+
+Handles:
+- Recipe CRUD operations
+- Image uploads via Cloudinary
+- Ingredient storage and updates
+
+---
+
+###  Grocery Lists API
+- `GET /api/grocery-lists`
+- `POST /api/grocery-lists`
+- `PUT /api/grocery-lists`
+- `DELETE /api/grocery-lists`
+
+Handles:
+- Grocery list CRUD operations
+- Item checking/unchecking
+- User-specific data isolation
+
+---
+
+###  Recipe → Grocery Integration
+- `POST /api/add-ingredients`
+- Converts recipe ingredients into grocery list items
+- Merges duplicate items by name + unit
+- Supports both existing and new grocery lists
+- Handles quantity aggregation logic
+- 
 ---
 
 ### Environment Variables
